@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Reports | Smart City</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+/* =====================================================
+   GLOBAL
+===================================================== */
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:"Segoe UI",Arial,sans-serif;
+    background:#f4f8ff;
+    color:#172554;
+}
+
+/* =====================================================
+   SIDEBAR - SAME AS OUR PROJECT
+===================================================== */
+
+.sidebar{
+    position:fixed !important;
+    top:0 !important;
+    left:0 !important;
+    width:250px !important;
+    height:100vh !important;
+    background:linear-gradient(180deg,#111936 0%,#16285a 100%) !important;
+    padding:28px 18px !important;
+    box-sizing:border-box !important;
+    color:white !important;
+    z-index:9999 !important;
+    overflow-y:auto !important;
+}
+
+.sidebar .logo{
+    display:flex !important;
+    align-items:center !important;
+    gap:12px !important;
+    padding:5px 8px 28px !important;
+}
+
+.sidebar .logo-icon{
+    width:48px !important;
+    height:48px !important;
+    border-radius:14px !important;
+    background:#1769ff !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    flex-shrink:0 !important;
+    box-shadow:0 5px 18px rgba(23,105,255,.35) !important;
+}
+
+.sidebar .logo-icon i{
+    color:white !important;
+    font-size:20px !important;
+}
+
+.sidebar .logo h4{
+    margin:0 !important;
+    color:white !important;
+    font-size:18px !important;
+    font-weight:700 !important;
+}
+
+.sidebar .logo span{
+    display:block !important;
+    margin-top:3px !important;
+    color:#9da8c7 !important;
+    font-size:11px !important;
+}
+
+.sidebar .menu-title{
+    color:#8793b7 !important;
+    font-size:11px !important;
+    text-transform:uppercase !important;
+    letter-spacing:1.5px !important;
+    margin:12px 10px 10px !important;
+}
+
+.sidebar .nav-link{
+    display:flex !important;
+    align-items:center !important;
+    gap:14px !important;
+    width:100% !important;
+    height:48px !important;
+    padding:0 14px !important;
+    margin-bottom:5px !important;
+    box-sizing:border-box !important;
+    border-radius:10px !important;
+    color:#c9d2ec !important;
+    text-decoration:none !important;
+    font-size:14px !important;
+    transition:all .25s ease !important;
+}
+
+.sidebar .nav-link i{
+    width:22px !important;
+    text-align:center !important;
+    font-size:17px !important;
+    color:#d7e0f7 !important;
+}
+
+.sidebar .nav-link:hover{
+    background:rgba(47,105,255,.16) !important;
+    color:white !important;
+}
+
+.sidebar .nav-link.active{
+    background:linear-gradient(90deg,#1769ff,#216cff) !important;
+    color:white !important;
+    box-shadow:0 6px 18px rgba(23,105,255,.28) !important;
+}
+
+.sidebar .nav-link.active i{
+    color:white !important;
+}
+
+/* =====================================================
+   ADMIN BOX
+===================================================== */
+
+.sidebar .admin-box{
+    margin-top:28px !important;
+    padding:14px !important;
+    border-radius:14px !important;
+    background:rgba(255,255,255,.07) !important;
+    border:1px solid rgba(255,255,255,.06) !important;
+}
+
+.sidebar .admin-info{
+    display:flex !important;
+    align-items:center !important;
+    gap:10px !important;
+    margin-bottom:12px !important;
+}
+
+.sidebar .admin-avatar{
+    width:38px !important;
+    height:38px !important;
+    border-radius:50% !important;
+    background:#8ec5ff !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    flex-shrink:0 !important;
+}
+
+.sidebar .admin-avatar i{
+    color:white !important;
+    font-size:16px !important;
+}
+
+.sidebar .admin-name{
+    color:white !important;
+    font-size:14px !important;
+    font-weight:600 !important;
+}
+
+.sidebar .admin-role{
+    color:#aab5d0 !important;
+    font-size:11px !important;
+    margin-top:2px !important;
+}
+
+.sidebar .logout{
+    width:100% !important;
+    border:none !important;
+    border-radius:9px !important;
+    padding:10px !important;
+    background:rgba(255,255,255,.06) !important;
+    color:#dce3f5 !important;
+    font-size:13px !important;
+    cursor:pointer !important;
+}
+
+.sidebar .logout i{
+    margin-right:7px !important;
+}
+
+.sidebar .logout:hover{
+    background:rgba(255,255,255,.12) !important;
+    color:white !important;
+}
+
+/* =====================================================
+   MAIN CONTENT
+===================================================== */
+
+.main-content{
+    margin-left:250px;
+    min-height:100vh;
+    padding:30px 34px 50px;
+}
+
+/* =====================================================
+   TOP HEADER
+===================================================== */
+
+.reports-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+}
+
+.title-section{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.page-icon{
+    width:56px;
+    height:56px;
+    border-radius:16px;
+    background:#e7f0ff;
+    color:#1769ff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:25px;
+}
+
+.page-title{
+    margin:0;
+    font-size:30px;
+    font-weight:750;
+    color:#172554;
+}
+
+.page-subtitle{
+    margin:5px 0 0;
+    color:#64748b;
+    font-size:14px;
+}
+
+/* =====================================================
+   REPORT ACTIONS
+===================================================== */
+
+.report-actions{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.report-date{
+    height:44px;
+    padding:0 15px;
+    border:1px solid #dce6f3;
+    border-radius:10px;
+    background:white;
+    color:#475569;
+    font-size:13px;
+    outline:none;
+}
+
+.refresh-report{
+    height:44px;
+    padding:0 17px;
+    border:none;
+    border-radius:10px;
+    background:#1769ff;
+    color:white;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    box-shadow:0 6px 16px rgba(23,105,255,.22);
+}
+
+.refresh-report i{
+    margin-right:7px;
+}
+
+/* =====================================================
+   SUMMARY CARDS
+===================================================== */
+
+.summary-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:16px;
+    margin-bottom:18px;
+}
+
+.summary-card{
+    background:white;
+    border:1px solid #e1e9f5;
+    border-radius:16px;
+    padding:18px;
+    min-height:120px;
+    box-shadow:0 5px 18px rgba(31,70,120,.06);
+    position:relative;
+    overflow:hidden;
+}
+
+.summary-card::after{
+    content:"";
+    position:absolute;
+    right:-25px;
+    top:-25px;
+    width:80px;
+    height:80px;
+    border-radius:50%;
+    background:rgba(23,105,255,.035);
+}
+
+.summary-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+}
+
+.summary-icon{
+    width:47px;
+    height:47px;
+    border-radius:13px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:21px;
+}
+
+.blue-icon{
+    background:#e7f1ff;
+    color:#1769ff;
+}
+
+.green-icon{
+    background:#e7faef;
+    color:#16a36a;
+}
+
+.purple-icon{
+    background:#f0eaff;
+    color:#7c3aed;
+}
+
+.orange-icon{
+    background:#fff2df;
+    color:#f59e0b;
+}
+
+.summary-label{
+    color:#64748b;
+    font-size:12px;
+    font-weight:600;
+    margin-top:12px;
+}
+
+.summary-value{
+    color:#172554;
+    font-size:25px;
+    font-weight:750;
+    margin-top:4px;
+}
+
+.summary-note{
+    color:#94a3b8;
+    font-size:11px;
+    margin-top:5px;
+}
+
+/* =====================================================
+   REPORT GRID
+===================================================== */
+
+.report-grid{
+    display:grid;
+    grid-template-columns:1.55fr 1fr 1fr;
+    gap:16px;
+    margin-bottom:18px;
+}
+
+.report-card{
+    background:white;
+    border:1px solid #e1e9f5;
+    border-radius:16px;
+    padding:18px;
+    box-shadow:0 5px 18px rgba(31,70,120,.06);
+}
+
+.card-title{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:3px;
+}
+
+.card-title i{
+    color:#1769ff;
+    font-size:19px;
+}
+
+.card-title h2{
+    margin:0;
+    color:#172554;
+    font-size:17px;
+}
+
+.card-subtitle{
+    margin:0 0 13px 29px;
+    color:#94a3b8;
+    font-size:11px;
+}
+
+.chart-container{
+    position:relative;
+    height:245px;
+}
+
+/* =====================================================
+   LOWER GRID
+===================================================== */
+
+.lower-grid{
+    display:grid;
+    grid-template-columns:1.25fr 1fr;
+    gap:16px;
+}
+
+/* =====================================================
+   TOP ROUTES TABLE
+===================================================== */
+
+.table-wrapper{
+    overflow-x:auto;
+}
+
+.top-routes-table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.top-routes-table th{
+    background:#f7faff;
+    color:#64748b;
+    font-size:11px;
+    padding:11px 10px;
+    text-align:left;
+    border-bottom:1px solid #e4ebf5;
+}
+
+.top-routes-table td{
+    padding:12px 10px;
+    color:#475569;
+    font-size:12px;
+    border-bottom:1px solid #edf2f7;
+}
+
+.top-routes-table tr:last-child td{
+    border-bottom:none;
+}
+
+.route-number{
+    width:27px;
+    height:27px;
+    border-radius:50%;
+    background:#edf4ff;
+    color:#1769ff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:700;
+    font-size:11px;
+}
+
+.route-name{
+    color:#172554;
+    font-weight:600;
+}
+
+.route-arrow{
+    color:#1769ff;
+    margin:0 5px;
+}
+
+.algorithm-badge{
+    display:inline-block;
+    padding:5px 8px;
+    border-radius:7px;
+    background:#edf4ff;
+    color:#1769ff;
+    font-size:10px;
+    font-weight:600;
+}
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media(max-width:1200px){
+
+    .summary-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .report-grid{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .report-grid .wide-card{
+        grid-column:1/-1;
+    }
+}
+
+@media(max-width:800px){
+
+    .main-content{
+        margin-left:250px;
+        padding:22px 18px;
+    }
+
+    .reports-header{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:15px;
+    }
+
+    .summary-grid{
+        grid-template-columns:1fr;
+    }
+
+    .report-grid,
+    .lower-grid{
+        grid-template-columns:1fr;
+    }
+
+    .report-actions{
+        width:100%;
+    }
+
+    .report-date{
+        flex:1;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- =====================================================
+     SIDEBAR
+===================================================== -->
+
+<aside class="sidebar">
+
+    <div class="logo">
+
+        <div class="logo-icon">
+            <i class="fa-solid fa-route"></i>
+        </div>
+
+        <div>
+            <h4>SMART CITY</h4>
+            <span>Route Navigation</span>
+        </div>
+
+    </div>
+
+    <div class="menu-title">
+        Main Menu
+    </div>
+
+    <a href="dashboard.html" class="nav-link">
+        <i class="fa-solid fa-house"></i>
+        <span>Dashboard</span>
+    </a>
+
+    <a href="map.html" class="nav-link">
+        <i class="fa-solid fa-map"></i>
+        <span>Map View</span>
+    </a>
+
+    <a href="route-finder.html" class="nav-link">
+        <i class="fa-solid fa-route"></i>
+        <span>Route Finder</span>
+    </a>
+
+    <a href="traffic.html" class="nav-link">
+        <i class="fa-solid fa-traffic-light"></i>
+        <span>Traffic Status</span>
+    </a>
+
+    <a href="algorithm.html" class="nav-link">
+        <i class="fa-solid fa-brain"></i>
+        <span>Route Algorithms</span>
+    </a>
+
+    <a href="route-history.html" class="nav-link">
+        <i class="fa-solid fa-clock-rotate-left"></i>
+        <span>Route History</span>
+    </a>
+
+    <!-- ACTIVE REPORTS -->
+    <a href="reports.html" class="nav-link active">
+        <i class="fa-solid fa-chart-column"></i>
+        <span>Reports</span>
+    </a>
+
+    <div class="menu-title">
+        System
+    </div>
+
+    <a href="settings.html" class="nav-link">
+        <i class="fa-solid fa-gear"></i>
+        <span>Settings</span>
+    </a>
+
+    <div class="admin-box">
+
+        <div class="admin-info">
+
+            <div class="admin-avatar">
+                <i class="fa-solid fa-user"></i>
+            </div>
+
+            <div>
+                <div class="admin-name">
+                    Admin
+                </div>
+
+                <div class="admin-role">
+                    Administrator
+                </div>
+            </div>
+
+        </div>
+
+        <button class="logout" onclick="logoutUser()">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            Logout
+        </button>
+
+    </div>
+
+</aside>
+
+<!-- =====================================================
+     MAIN CONTENT
+===================================================== -->
+
+<main class="main-content">
+
+    <header class="reports-header">
+
+        <div class="title-section">
+
+            <div class="page-icon">
+                <i class="fa-solid fa-chart-column"></i>
+            </div>
+
+            <div>
+
+                <h1 class="page-title">
+                    Reports
+                </h1>
+
+                <p class="page-subtitle">
+                    View route statistics and insights
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="report-actions">
+
+            <input
+                type="date"
+                id="reportDate"
+                class="report-date"
+            >
+
+            <button
+                class="refresh-report"
+                id="refreshReportsBtn"
+            >
+                <i class="fa-solid fa-rotate"></i>
+                Refresh
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- SUMMARY CARDS -->
+
+    <section class="summary-grid">
+
+        <div class="summary-card">
+
+            <div class="summary-top">
+
+                <div class="summary-icon blue-icon">
+                    <i class="fa-solid fa-route"></i>
+                </div>
+
+            </div>
+
+            <div class="summary-label">
+                Total Routes
+            </div>
+
+            <div
+                class="summary-value"
+                id="reportTotalRoutes"
+            >
+                0
+            </div>
+
+            <div class="summary-note">
+                Based on saved route searches
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div class="summary-top">
+
+                <div class="summary-icon green-icon">
+                    <i class="fa-solid fa-road"></i>
+                </div>
+
+            </div>
+
+            <div class="summary-label">
+                Total Distance
+            </div>
+
+            <div
+                class="summary-value"
+                id="reportTotalDistance"
+            >
+                0 km
+            </div>
+
+            <div class="summary-note">
+                Total distance of searched routes
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div class="summary-top">
+
+                <div class="summary-icon purple-icon">
+                    <i class="fa-solid fa-brain"></i>
+                </div>
+
+            </div>
+
+            <div class="summary-label">
+                Most Used Algorithm
+            </div>
+
+            <div
+                class="summary-value"
+                id="reportMostAlgorithm"
+            >
+                —
+            </div>
+
+            <div
+                class="summary-note"
+                id="reportAlgorithmNote"
+            >
+                Based on saved searches
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div class="summary-top">
+
+                <div class="summary-icon orange-icon">
+                    <i class="fa-regular fa-clock"></i>
+                </div>
+
+            </div>
+
+            <div class="summary-label">
+                Total Travel Time
+            </div>
+
+            <div
+                class="summary-value"
+                id="reportTotalTime"
+            >
+                0 min
+            </div>
+
+            <div class="summary-note">
+                Estimated travel time
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- CHARTS WILL COME IN PART 2 -->
+
+    <!-- =====================================================
+         CHARTS ROW
+    ===================================================== -->
+
+    <section class="report-grid">
+
+        <!-- ROUTES PER DAY -->
+
+        <div class="report-card wide-card">
+
+            <div class="card-title">
+                <i class="fa-solid fa-chart-column"></i>
+
+                <h2>
+                    Routes per Day
+                </h2>
+            </div>
+
+            <p class="card-subtitle">
+                Number of routes searched each day
+            </p>
+
+            <div class="chart-container">
+                <canvas id="routesPerDayChart"></canvas>
+            </div>
+
+        </div>
+
+
+        <!-- ALGORITHM USAGE -->
+
+        <div class="report-card">
+
+            <div class="card-title">
+                <i class="fa-solid fa-chart-pie"></i>
+
+                <h2>
+                    Algorithm Usage
+                </h2>
+            </div>
+
+            <p class="card-subtitle">
+                Distribution of route algorithms
+            </p>
+
+            <div class="chart-container">
+                <canvas id="algorithmUsageChart"></canvas>
+            </div>
+
+        </div>
+
+
+        <!-- DISTANCE BY ALGORITHM -->
+
+        <div class="report-card">
+
+            <div class="card-title">
+                <i class="fa-solid fa-road"></i>
+
+                <h2>
+                    Distance by Algorithm
+                </h2>
+            </div>
+
+            <p class="card-subtitle">
+                Total distance using each algorithm
+            </p>
+
+            <div class="chart-container">
+                <canvas id="distanceAlgorithmChart"></canvas>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         LOWER REPORT SECTION
+    ===================================================== -->
+
+    <section class="lower-grid">
+
+
+        <!-- TOP ROUTES -->
+
+        <div class="report-card">
+
+            <div class="card-title">
+
+                <i class="fa-solid fa-location-dot"></i>
+
+                <h2>
+                    Top Routes
+                </h2>
+
+            </div>
+
+            <p class="card-subtitle">
+                Most frequently searched routes
+            </p>
+
+
+            <div class="table-wrapper">
+
+                <table class="top-routes-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>#</th>
+
+                            <th>
+                                Source → Destination
+                            </th>
+
+                            <th>
+                                Count
+                            </th>
+
+                            <th>
+                                Total Distance
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="topRoutesBody">
+
+                        <tr>
+
+                            <td colspan="4"
+                                style="
+                                text-align:center;
+                                color:#94a3b8;
+                                padding:30px;
+                                ">
+                                Loading route data...
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <!-- TRAVEL TIME -->
+
+        <div class="report-card">
+
+            <div class="card-title">
+
+                <i class="fa-regular fa-clock"></i>
+
+                <h2>
+                    Travel Time Statistics
+                </h2>
+
+            </div>
+
+            <p class="card-subtitle">
+                Total travel time using each algorithm
+            </p>
+
+            <div class="chart-container">
+
+                <canvas id="travelTimeChart"></canvas>
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- =====================================================
+         REPORT STATUS
+    ===================================================== -->
+
+    <div
+        id="reportStatus"
+        style="
+        margin-top:18px;
+        padding:12px 15px;
+        border-radius:10px;
+        background:#eef5ff;
+        color:#1769ff;
+        font-size:12px;
+        display:none;
+        "
+    >
+    </div>
+
+
+</main>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
+<script src="js/auth.js"></script>
+
+<script src="js/reports.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,3093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Smart City - Dashboard</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+/* =========================
+   BASIC
+========================= */
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Arial,sans-serif;
+    background:#070b24;
+    color:white;
+    min-height:100vh;
+}
+
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.sidebar{
+    position:fixed;
+    left:0;
+    top:0;
+    width:250px;
+    height:100vh;
+
+    background:linear-gradient(
+        180deg,
+        #111847,
+        #080c2d
+    );
+
+    border-right:1px solid #242b61;
+
+    padding:22px 16px;
+
+    z-index:1000;
+}
+
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:12px;
+
+    padding:8px 10px;
+    margin-bottom:30px;
+}
+
+
+.logo-icon{
+    width:42px;
+    height:42px;
+
+    border-radius:12px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #6538ed,
+            #3159ff
+        );
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+
+.logo h4{
+    font-size:17px;
+    margin:0;
+    font-weight:700;
+}
+
+
+.logo span{
+    display:block;
+    color:#858db8;
+    font-size:10px;
+    margin-top:3px;
+}
+
+
+.menu-title{
+    color:#646e9d;
+    font-size:10px;
+
+    text-transform:uppercase;
+
+    letter-spacing:1.5px;
+
+    margin:8px 10px 10px;
+}
+
+
+.nav-link{
+    color:#aeb6df;
+
+    text-decoration:none;
+
+    padding:12px 14px;
+
+    margin-bottom:5px;
+
+    border-radius:10px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:13px;
+
+    transition:.25s;
+}
+
+
+.nav-link i{
+    width:20px;
+    text-align:center;
+}
+
+
+.nav-link span{
+    font-size:13px;
+}
+
+
+.nav-link:hover{
+    background:#20275b;
+    color:white;
+}
+
+
+.nav-link.active{
+    color:white;
+
+    background:
+        linear-gradient(
+            90deg,
+            #6337e8,
+            #394fe0
+        );
+
+    box-shadow:
+        0 7px 22px
+        rgba(79,55,220,.28);
+}
+
+
+/* =========================
+   ADMIN BOX
+========================= */
+
+.admin-box{
+    position:absolute;
+
+    left:16px;
+    right:16px;
+    bottom:18px;
+
+    background:#11183e;
+
+    border:1px solid #252d62;
+
+    border-radius:14px;
+
+    padding:13px;
+}
+
+
+.admin-info{
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+}
+
+
+.admin-avatar{
+    width:38px;
+    height:38px;
+
+    border-radius:50%;
+
+    background:
+        linear-gradient(
+            135deg,
+            #7537ee,
+            #16b6e9
+        );
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+}
+
+
+.admin-name{
+    font-size:13px;
+    font-weight:600;
+}
+
+
+.admin-role{
+    font-size:10px;
+    color:#7882ae;
+}
+
+
+.logout{
+    width:100%;
+
+    margin-top:12px;
+
+    border:0;
+
+    border-radius:8px;
+
+    padding:9px;
+
+    background:#25205b;
+
+    color:#d8d5ff;
+
+    cursor:pointer;
+}
+
+
+.logout:hover{
+    background:#6a35df;
+    color:white;
+}
+
+
+/* =========================
+   MAIN
+========================= */
+
+.main{
+    margin-left:250px;
+
+    padding:28px;
+
+    min-height:100vh;
+}
+
+
+/* =========================
+   TOP BAR
+========================= */
+
+.topbar{
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    margin-bottom:25px;
+}
+
+
+.page-title h1{
+    font-size:27px;
+
+    margin-bottom:5px;
+}
+
+
+.page-title p{
+    color:#7882ad;
+
+    font-size:12px;
+}
+
+
+.user-area{
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    position:relative;
+}
+
+
+/* =========================
+   NOTIFICATION
+========================= */
+
+.top-notification{
+
+    width:42px;
+    height:42px;
+
+    border-radius:12px;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    cursor:pointer;
+
+    color:#dbe4ff;
+
+    background:
+        rgba(255,255,255,.06);
+
+    transition:.3s;
+
+    position:relative;
+}
+
+
+.top-notification:hover{
+
+    background:
+        rgba(255,255,255,.14);
+
+}
+
+
+.notification-dot{
+
+    position:absolute;
+
+    top:8px;
+    right:8px;
+
+    width:7px;
+    height:7px;
+
+    border-radius:50%;
+
+    background:#ef4444;
+
+    border:2px solid #111936;
+}
+
+
+/* =========================
+   USER
+========================= */
+
+.user-profile{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:9px;
+
+    cursor:pointer;
+
+    padding:5px 9px;
+
+    border-radius:12px;
+
+    transition:.2s;
+}
+
+
+.user-profile:hover{
+
+    background:
+        rgba(255,255,255,.08);
+
+}
+
+
+.user-avatar{
+
+    width:37px;
+    height:37px;
+
+    border-radius:50%;
+
+    background:
+        linear-gradient(
+            135deg,
+            #7540ef,
+            #2d70ff
+        );
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+}
+
+
+.user-name{
+
+    font-size:12px;
+
+    font-weight:600;
+}
+
+
+.user-role{
+
+    font-size:9px;
+
+    color:#727ca8;
+}
+
+
+.user-chevron{
+
+    font-size:10px;
+
+    color:#7884ad;
+
+    margin-left:3px;
+}
+
+
+/* =========================
+   POPUPS
+========================= */
+
+.notification-panel,
+.user-panel{
+
+    display:none;
+
+    position:absolute;
+
+    top:55px;
+
+    right:0;
+
+    width:320px;
+
+    background:#111936;
+
+    border:
+        1px solid
+        rgba(255,255,255,.12);
+
+    border-radius:16px;
+
+    padding:15px;
+
+    box-shadow:
+        0 20px 50px
+        rgba(0,0,0,.5);
+
+    z-index:9999;
+}
+
+
+.notification-panel.show,
+.user-panel.show{
+
+    display:block;
+
+}
+
+
+.popup-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    color:white;
+
+    font-size:15px;
+
+    margin-bottom:12px;
+}
+
+
+.popup-close{
+
+    cursor:pointer;
+
+    color:#8791bc;
+
+    font-size:21px;
+}
+
+
+/* =========================
+   NOTIFICATION ITEMS
+========================= */
+
+.notification-item{
+
+    display:flex;
+
+    gap:12px;
+
+    padding:12px;
+
+    margin-top:8px;
+
+    border-radius:12px;
+
+    background:
+        rgba(255,255,255,.04);
+}
+
+
+.notification-item i{
+
+    width:32px;
+
+    height:32px;
+
+    border-radius:10px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:
+        rgba(59,130,246,.18);
+
+    color:#60a5fa;
+}
+
+
+.notification-item strong{
+
+    display:block;
+
+    font-size:12px;
+}
+
+
+.notification-item small{
+
+    display:block;
+
+    margin-top:4px;
+
+    color:#8791bc;
+
+    font-size:10px;
+}
+
+
+/* =========================
+   USER MENU
+========================= */
+
+.user-menu-name{
+
+    font-size:14px;
+
+    font-weight:700;
+}
+
+
+.user-menu-email{
+
+    font-size:10px;
+
+    color:#7f8ab4;
+
+    margin-top:3px;
+}
+
+
+.user-menu-line{
+
+    height:1px;
+
+    background:#242d53;
+
+    margin:13px 0;
+}
+
+
+.user-menu-link{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    padding:10px 8px;
+
+    color:#cdd5f4;
+
+    text-decoration:none;
+
+    border-radius:9px;
+
+    font-size:12px;
+}
+
+
+.user-menu-link:hover{
+
+    background:#20285a;
+
+    color:white;
+}
+
+
+/* =========================
+   STAT CARDS
+========================= */
+
+.stat-card{
+
+    position:relative;
+
+    overflow:hidden;
+
+    min-height:145px;
+
+    padding:20px;
+
+    border-radius:17px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.08);
+
+    box-shadow:
+        0 15px 40px
+        rgba(0,0,0,.20);
+
+    transition:.3s;
+}
+
+
+.stat-card:hover{
+
+    transform:translateY(-4px);
+
+}
+
+
+.card-purple{
+
+    background:
+        linear-gradient(
+            135deg,
+            #5725ce,
+            #3428a7
+        );
+
+}
+
+
+.card-blue{
+
+    background:
+        linear-gradient(
+            135deg,
+            #1765db,
+            #253aab
+        );
+
+}
+
+
+.card-orange{
+
+    background:
+        linear-gradient(
+            135deg,
+            #e17b27,
+            #b84a31
+        );
+
+}
+
+
+.card-green{
+
+    background:
+        linear-gradient(
+            135deg,
+            #129c79,
+            #08715f
+        );
+
+}
+
+
+.stat-top{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+}
+
+
+.stat-title{
+
+    font-size:12px;
+
+    color:
+        rgba(255,255,255,.72);
+}
+
+
+.stat-icon{
+
+    width:40px;
+    height:40px;
+
+    border-radius:12px;
+
+    background:
+        rgba(255,255,255,.15);
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+}
+
+
+.stat-number{
+
+    font-size:29px;
+
+    font-weight:700;
+
+    margin-top:17px;
+}
+
+
+.stat-sub{
+
+    font-size:10px;
+
+    color:
+        rgba(255,255,255,.68);
+
+    margin-top:3px;
+}
+
+
+.stat-change{
+
+    font-size:10px;
+
+    color:#b9ffdc;
+
+    margin-top:7px;
+}
+
+
+/* =========================
+   PANELS
+========================= */
+
+.panel{
+
+    background:
+        linear-gradient(
+            145deg,
+            #11173b,
+            #0b102c
+        );
+
+    border:1px solid #232b58;
+
+    border-radius:17px;
+
+    padding:20px;
+
+    height:100%;
+
+    box-shadow:
+        0 15px 45px
+        rgba(0,0,0,.18);
+}
+
+
+.panel-header{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    margin-bottom:18px;
+}
+
+
+.panel-title{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:9px;
+}
+
+
+.panel-title i{
+
+    color:#8b68ff;
+
+}
+
+
+.panel-title h5{
+
+    font-size:14px;
+
+    margin:0;
+}
+
+
+.panel-action{
+
+    color:#7884b4;
+
+    font-size:10px;
+
+    text-decoration:none;
+}
+
+
+/* =========================
+   TABLE
+========================= */
+
+.route-table{
+
+    width:100%;
+
+    border-collapse:collapse;
+}
+
+
+.route-table th{
+
+    color:#69749f;
+
+    font-size:9px;
+
+    padding:10px 7px;
+
+    border-bottom:
+        1px solid #252d56;
+
+    text-align:left;
+}
+
+
+.route-table td{
+
+    color:#dce0f6;
+
+    font-size:11px;
+
+    padding:12px 7px;
+
+    border-bottom:
+        1px solid #1d2449;
+}
+
+
+.route-source{
+
+    color:white;
+
+    font-weight:500;
+}
+
+
+.route-destination{
+
+    color:#8f9ac5;
+}
+
+
+.algorithm-badge{
+
+    display:inline-block;
+
+    padding:4px 8px;
+
+    border-radius:20px;
+
+    background:#24195a;
+
+    color:#ad9bff;
+
+    font-size:9px;
+}
+
+
+/* =========================
+   MAP
+========================= */
+
+#dashboardMap{
+
+    width:100%;
+
+    height:300px;
+
+    border-radius:13px;
+
+    overflow:hidden;
+}
+
+
+#trafficChart,
+#algorithmChart,
+#distributionChart{
+
+    max-height:280px;
+
+}
+
+
+/* =========================
+   ALERTS
+========================= */
+
+.alert-item{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    padding:12px;
+
+    margin-bottom:8px;
+
+    border-radius:11px;
+
+    background:
+        rgba(255,255,255,.025);
+
+    border:
+        1px solid #1f274d;
+}
+
+
+.alert-icon{
+
+    width:35px;
+
+    height:35px;
+
+    border-radius:9px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+}
+
+
+.alert-blue{
+
+    background:
+        rgba(59,130,246,.14);
+
+    color:#66a5ff;
+}
+
+
+.alert-yellow{
+
+    background:
+        rgba(245,158,11,.14);
+
+    color:#ffc34d;
+}
+
+
+.alert-red{
+
+    background:
+        rgba(239,68,68,.14);
+
+    color:#ff6969;
+}
+
+
+.alert-text strong{
+
+    display:block;
+
+    font-size:11px;
+}
+
+
+.alert-text span{
+
+    display:block;
+
+    color:#68739e;
+
+    font-size:9px;
+
+    margin-top:3px;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:1000px){
+
+    .sidebar{
+
+        width:80px;
+
+        padding:20px 10px;
+
+    }
+
+    .logo h4,
+    .logo span,
+    .menu-title,
+    .nav-link span,
+    .admin-box{
+
+        display:none;
+
+    }
+
+    .logo{
+
+        justify-content:center;
+
+    }
+
+    .nav-link{
+
+        justify-content:center;
+
+    }
+
+    .main{
+
+        margin-left:80px;
+
+    }
+
+}
+
+
+@media(max-width:650px){
+
+    .main{
+
+        padding:15px;
+
+    }
+
+    .topbar{
+
+        display:block;
+
+    }
+
+    .user-area{
+
+        margin-top:15px;
+
+    }
+
+    .page-title h1{
+
+        font-size:23px;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- =========================
+     SIDEBAR
+========================= -->
+
+<div class="sidebar">
+
+    <div class="logo">
+
+        <div class="logo-icon">
+            <i class="fa-solid fa-route"></i>
+        </div>
+
+        <div>
+            <h4>SMART CITY</h4>
+            <span>Route Navigation</span>
+        </div>
+
+    </div>
+
+
+    <div class="menu-title">
+        Main Menu
+    </div>
+
+
+    <!-- Dashboard -->
+
+    <a href="dashboard.html"
+       class="nav-link active">
+
+        <i class="fa-solid fa-house"></i>
+
+        <span>Dashboard</span>
+
+    </a>
+
+
+    <!-- Map View -->
+
+    <a href="map.html"
+       class="nav-link">
+
+        <i class="fa-solid fa-map"></i>
+
+        <span>Map View</span>
+
+    </a>
+
+
+    <!-- Route Finder -->
+
+    <a href="route-finder.html"
+       class="nav-link">
+
+        <i class="fa-solid fa-route"></i>
+
+        <span>Route Finder</span>
+
+    </a>
+
+
+    <!-- Traffic Status -->
+
+    <a href="traffic.html"
+       class="nav-link">
+
+        <i class="fa-solid fa-traffic-light"></i>
+
+        <span>Traffic Status</span>
+
+    </a>
+
+
+    <!-- Route Algorithms -->
+
+    <a href="algorithm.html"
+       class="nav-link">
+
+        <i class="fa-solid fa-brain"></i>
+
+        <span>Route Algorithms</span>
+
+    </a>
+
+
+    <!-- Route History -->
+
+    <a href="history.html"
+       class="nav-link">
+
+        <i class="fa-solid fa-clock-rotate-left"></i>
+
+        <span>Route History</span>
+
+    </a>
+
+
+    <!-- Reports -->
+
+    <a href="reports.html"
+       class="nav-link">
+
+        <i class="fa-solid fa-chart-column"></i>
+
+        <span>Reports</span>
+
+    </a>
+
+
+    <div class="menu-title">
+        System
+    </div>
+
+
+    <!-- Settings -->
+
+    <a href="settings.html"
+       class="nav-link">
+
+        <i class="fa-solid fa-gear"></i>
+
+        <span>Settings</span>
+
+    </a>
+
+
+    <!-- Admin Box -->
+
+    <div class="admin-box">
+
+        <div class="admin-info">
+
+            <div class="admin-avatar">
+
+
+                <i class="fa-solid fa-user"></i>
+
+            </div>
+
+            <div>
+
+                <div class="admin-name">
+                    Admin
+                </div>
+
+                <div class="admin-role">
+                    Administrator
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <button
+            class="logout"
+            onclick="logoutUser()">
+
+            <i class="fa-solid fa-right-from-bracket"></i>
+
+            Logout
+
+        </button>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================
+     MAIN CONTENT
+========================= -->
+
+<div class="main">
+
+
+    <!-- =========================
+         TOP BAR
+    ========================= -->
+
+    <div class="topbar">
+
+
+        <div class="page-title">
+
+            <h1>
+                Dashboard
+            </h1>
+
+            <p>
+                Smart City Route Navigation System
+            </p>
+
+        </div>
+
+
+
+        <div class="user-area">
+
+
+            <!-- =====================
+                 NOTIFICATION BUTTON
+            ====================== -->
+
+            <div
+                class="top-notification"
+                onclick="toggleNotifications()">
+
+                <i class="fa-solid fa-bell"></i>
+
+                <span
+                    class="notification-dot">
+                </span>
+
+            </div>
+
+
+
+            <!-- =====================
+                 NOTIFICATION PANEL
+            ====================== -->
+
+            <div
+                id="notificationPanel"
+                class="notification-panel">
+
+
+                <div class="popup-header">
+
+                    <strong>
+                        Notifications
+                    </strong>
+
+                    <span
+                        class="popup-close"
+                        onclick="toggleNotifications()">
+
+                        ×
+
+                    </span>
+
+                </div>
+
+
+
+                <div class="notification-item">
+
+                    <i
+                        class="fa-solid fa-route">
+                    </i>
+
+                    <div>
+
+                        <strong>
+                            Route Search
+                        </strong>
+
+                        <small>
+                            Your latest route is available.
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="notification-item">
+
+                    <i
+                        class="fa-solid fa-database">
+                    </i>
+
+                    <div>
+
+                        <strong>
+                            Database
+                        </strong>
+
+                        <small>
+                            Route information is available.
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="notification-item">
+
+                    <i
+                        class="fa-solid fa-circle-check">
+                    </i>
+
+                    <div>
+
+                        <strong>
+                            System Ready
+                        </strong>
+
+                        <small>
+                            Smart City system is running.
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =====================
+                 USER BUTTON
+            ====================== -->
+
+            <div
+                class="user-profile"
+                onclick="toggleUserMenu()">
+
+
+                <div class="user-avatar">
+
+                    <i class="fa-solid fa-user"></i>
+
+                </div>
+
+
+                <div>
+
+                    <div class="user-name">
+                        User
+                    </div>
+
+                    <div class="user-role">
+                        Route Navigator
+                    </div>
+
+                </div>
+
+
+                <i
+                    class="fa-solid fa-chevron-down user-chevron">
+                </i>
+
+            </div>
+
+
+
+            <!-- =====================
+                 USER PANEL
+            ====================== -->
+
+            <div
+                id="userPanel"
+                class="user-panel">
+
+
+                <div class="user-menu-name">
+                    User
+                </div>
+
+                <div class="user-menu-email">
+                    Route Navigator
+                </div>
+
+
+                <div class="user-menu-line">
+                </div>
+
+
+                <a
+                    href="settings.html"
+                    class="user-menu-link">
+
+                    <i class="fa-solid fa-gear"></i>
+
+                    Settings
+
+                </a>
+
+
+                <a
+                    href="history.html"
+                    class="user-menu-link">
+
+                    <i
+                        class="fa-solid fa-clock-rotate-left">
+                    </i>
+
+                    Route History
+
+                </a>
+
+
+                <a
+                    href="#"
+                    class="user-menu-link"
+                    onclick="logoutUser(); return false;">
+
+                    <i
+                        class="fa-solid fa-right-from-bracket">
+                    </i>
+
+                    Logout
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================
+         STAT CARDS
+    ========================= -->
+
+    <div class="row g-3 mb-4">
+
+
+        <!-- TOTAL ROUTES -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="stat-card card-purple">
+
+
+                <div class="stat-top">
+
+                    <span class="stat-title">
+                        Total Routes
+                    </span>
+
+
+                    <div class="stat-icon">
+
+                        <i class="fa-solid fa-route"></i>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="stat-number"
+                    id="totalRoutes">
+
+                    0
+
+                </div>
+
+
+                <div class="stat-sub">
+                    Routes searched
+                </div>
+
+
+                <div class="stat-change">
+                    Saved route records
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- TOTAL USERS -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="stat-card card-blue">
+
+
+                <div class="stat-top">
+
+                    <span class="stat-title">
+                        Total Users
+                    </span>
+
+
+                    <div class="stat-icon">
+
+                        <i class="fa-solid fa-users"></i>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="stat-number"
+                    id="totalUsers">
+
+                    0
+
+                </div>
+
+
+                <div class="stat-sub">
+                    Registered users
+                </div>
+
+
+                <div class="stat-change">
+                    Project users
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- DISTANCE -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="stat-card card-orange">
+
+
+                <div class="stat-top">
+
+                    <span class="stat-title">
+                        Distance
+                    </span>
+
+
+                    <div class="stat-icon">
+
+                        <i class="fa-solid fa-road"></i>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-number">
+
+                    <span id="totalDistance">
+                        0
+                    </span>
+
+                    km
+
+                </div>
+
+
+                <div class="stat-sub">
+                    Total route distance
+                </div>
+
+
+                <div class="stat-change">
+                    From saved routes
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ALGORITHMS -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="stat-card card-green">
+
+
+                <div class="stat-top">
+
+                    <span class="stat-title">
+                        Algorithms
+                    </span>
+
+
+                    <div class="stat-icon">
+
+                        <i class="fa-solid fa-brain"></i>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-number">
+                    4
+                </div>
+
+
+                <div class="stat-sub">
+                    BFS • DFS • Best First • A*
+                </div>
+
+
+                <div class="stat-change">
+                    Available algorithms
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================
+         TRAFFIC + RECENT ROUTES
+    ========================= -->
+
+    <div class="row g-3 mb-4">
+
+
+        <!-- TRAFFIC -->
+
+        <div class="col-xl-5">
+
+            <div class="panel">
+
+
+                <div class="panel-header">
+
+
+                    <div class="panel-title">
+
+                        <i
+                            class="fa-solid fa-chart-pie">
+                        </i>
+
+                        <h5>
+                            Traffic Overview
+                        </h5>
+
+                    </div>
+
+
+                    <span class="panel-action">
+                        Today
+                    </span>
+
+                </div>
+
+
+                <canvas
+                    id="trafficChart">
+                </canvas>
+
+
+            </div>
+
+        </div>
+
+
+
+        <!-- RECENT ROUTES -->
+
+        <div class="col-xl-7">
+
+            <div class="panel">
+
+
+                <div class="panel-header">
+
+
+                    <div class="panel-title">
+
+                        <i
+                            class="fa-solid fa-clock">
+                        </i>
+
+                        <h5>
+                            Recent Routes
+                        </h5>
+
+                    </div>
+
+
+                    <a
+                        href="history.html"
+                        class="panel-action">
+
+                        View All
+
+                    </a>
+
+                </div>
+
+
+
+                <div class="table-responsive">
+
+
+                    <table class="route-table">
+
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    #
+                                </th>
+
+                                <th>
+                                    Source
+                                </th>
+
+                                <th>
+                                    Destination
+                                </th>
+
+                                <th>
+                                    Algorithm
+                                </th>
+
+                                <th>
+                                    Distance
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="recentRoutes">
+
+                            <tr>
+
+                                <td
+                                    colspan="5"
+                                    style="
+                                    text-align:center;
+                                    color:#68739e;
+                                    padding:30px;
+                                    ">
+
+                                    No routes searched yet.
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================
+         MAP + ALGORITHM
+    ========================= -->
+
+    <div class="row g-3 mb-4">
+
+
+        <!-- MAP -->
+
+        <div class="col-xl-8">
+
+            <div class="panel">
+
+
+                <div class="panel-header">
+
+
+                    <div class="panel-title">
+
+                        <i
+                            class="fa-solid fa-map-location-dot">
+                        </i>
+
+                        <h5>
+                            Live Traffic Map
+                        </h5>
+
+                    </div>
+
+
+                    <span class="panel-action">
+                        OpenStreetMap
+                    </span>
+
+                </div>
+
+
+                <div id="dashboardMap">
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ALGORITHM -->
+
+        <div class="col-xl-4">
+
+            <div class="panel">
+
+
+                <div class="panel-header">
+
+
+                    <div class="panel-title">
+
+                        <i
+                            class="fa-solid fa-chart-column">
+                        </i>
+
+                        <h5>
+                            Route Algorithm Usage
+                        </h5>
+
+                    </div>
+
+
+                    <span class="panel-action">
+                        Routes
+                    </span>
+
+                </div>
+
+
+                <canvas
+                    id="algorithmChart">
+                </canvas>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================
+         ALERTS + DISTRIBUTION
+    ========================= -->
+
+    <div class="row g-3">
+
+
+        <!-- SYSTEM ALERTS -->
+
+        <div class="col-xl-7">
+
+            <div class="panel">
+
+
+                <div class="panel-header">
+
+
+                    <div class="panel-title">
+
+                        <i
+                            class="fa-solid fa-bell">
+                        </i>
+
+                        <h5>
+                            System Alerts
+                        </h5>
+
+                    </div>
+
+
+                    <span class="panel-action">
+                        System
+                    </span>
+
+                </div>
+
+
+
+                <div class="alert-item">
+
+
+                    <div
+                        class="alert-icon alert-blue">
+
+                        <i
+                            class="fa-solid fa-circle-info">
+                        </i>
+
+                    </div>
+
+
+                    <div class="alert-text">
+
+                        <strong>
+                            Route Navigation System
+                        </strong>
+
+                        <span>
+                            System is ready for route searches.
+                        </span>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="alert-item">
+
+
+                    <div
+                        class="alert-icon alert-yellow">
+
+                        <i
+                            class="fa-solid fa-database">
+                        </i>
+
+                    </div>
+
+
+                    <div class="alert-text">
+
+                        <strong>
+                            Database Status
+                        </strong>
+
+                        <span>
+                            Route information appears after searches.
+                        </span>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="alert-item">
+
+
+                    <div
+                        class="alert-icon alert-red">
+
+                        <i
+                            class="fa-solid fa-triangle-exclamation">
+                        </i>
+
+                    </div>
+
+
+                    <div class="alert-text">
+
+                        <strong>
+                            Live Traffic
+                        </strong>
+
+                        <span>
+                            Live traffic provider is not connected yet.
+                        </span>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ALGORITHM DISTRIBUTION -->
+
+        <div class="col-xl-5">
+
+            <div class="panel">
+
+
+                <div class="panel-header">
+
+
+                    <div class="panel-title">
+
+                        <i
+                            class="fa-solid fa-chart-pie">
+                        </i>
+
+                        <h5>
+                            Algorithm Distribution
+                        </h5>
+
+                    </div>
+
+                </div>
+
+
+                <canvas
+                    id="distributionChart">
+                </canvas>
+
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+<!-- =========================
+     JAVASCRIPT
+========================= -->
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+
+/* =========================
+   MAP
+========================= */
+
+const dashboardMap =
+    L.map("dashboardMap")
+     .setView(
+        [13.6288, 79.4192],
+        10
+     );
+
+
+L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
+        attribution:
+            "&copy; OpenStreetMap contributors"
+    }
+).addTo(dashboardMap);
+
+
+L.marker(
+    [13.6288, 79.4192]
+)
+.addTo(dashboardMap)
+.bindPopup(
+    "<b>Smart City</b><br>Tirupati Region"
+);
+
+
+/* =========================
+   NOTIFICATION
+========================= */
+
+function toggleNotifications(){
+
+    const panel =
+        document.getElementById(
+            "notificationPanel"
+        );
+
+    const userPanel =
+        document.getElementById(
+            "userPanel"
+        );
+
+
+    if(userPanel){
+
+        userPanel.classList.remove(
+            "show"
+        );
+
+    }
+
+
+    if(panel){
+
+        panel.classList.toggle(
+            "show"
+        );
+
+    }
+
+}
+
+
+/* =========================
+   USER MENU
+========================= */
+
+function toggleUserMenu(){
+
+    const panel =
+        document.getElementById(
+            "userPanel"
+        );
+
+    const notificationPanel =
+        document.getElementById(
+            "notificationPanel"
+        );
+
+
+    if(notificationPanel){
+
+        notificationPanel.classList.remove(
+            "show"
+        );
+
+    }
+
+
+    if(panel){
+
+        panel.classList.toggle(
+            "show"
+        );
+
+    }
+
+}
+
+
+/* =========================
+   CLOSE POPUPS
+========================= */
+
+document.addEventListener(
+    "click",
+    function(event){
+
+        const notification =
+            document.querySelector(
+                ".top-notification"
+            );
+
+        const notificationPanel =
+            document.getElementById(
+                "notificationPanel"
+            );
+
+        const user =
+            document.querySelector(
+                ".user-profile"
+            );
+
+        const userPanel =
+            document.getElementById(
+                "userPanel"
+            );
+
+
+        if(
+            notificationPanel &&
+            notification &&
+            !notification.contains(
+                event.target
+            ) &&
+            !notificationPanel.contains(
+                event.target
+            )
+        ){
+
+            notificationPanel.classList.remove(
+                "show"
+            );
+
+        }
+
+
+        if(
+            userPanel &&
+            user &&
+            !user.contains(
+                event.target
+            ) &&
+            !userPanel.contains(
+                event.target
+            )
+        ){
+
+            userPanel.classList.remove(
+                "show"
+            );
+
+        }
+
+    }
+);
+
+
+/* =========================
+   ROUTE HISTORY
+========================= */
+
+function getRouteHistory(){
+
+    try{
+
+        const data =
+            localStorage.getItem(
+                "routeHistory"
+            );
+
+
+        if(!data){
+
+            return [];
+
+        }
+
+
+        const routes =
+            JSON.parse(data);
+
+
+        if(
+            !Array.isArray(routes)
+        ){
+
+            return [];
+
+        }
+
+
+        return routes;
+
+    }
+
+    catch(error){
+
+        console.error(
+            "Route history error:",
+            error
+        );
+
+        return [];
+
+    }
+
+}
+
+
+/* =========================
+   HTML SAFETY
+========================= */
+
+function escapeHTML(value){
+
+    return String(value)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* =========================
+   LOAD DASHBOARD ROUTES
+========================= */
+
+async function loadDashboardRoutes(){
+
+    try{
+
+        const response = await fetch(
+            "/api/dashboard-data",
+            {
+                cache: "no-store"
+            }
+        );
+
+        if(!response.ok){
+            throw new Error("Dashboard API unavailable");
+        }
+
+        const data = await response.json();
+
+        if(!data.success){
+            throw new Error(
+                data.message || "Unable to load dashboard data."
+            );
+        }
+
+        /* TOTAL ROUTES */
+
+        const totalRoutes =
+            document.getElementById("totalRoutes");
+
+        if(totalRoutes){
+            totalRoutes.textContent =
+                data.total_routes || 0;
+        }
+
+
+        /* TOTAL DISTANCE */
+
+        const totalDistance =
+            document.getElementById("totalDistance");
+
+        if(totalDistance){
+            totalDistance.textContent =
+                Number(
+                    data.total_distance || 0
+                ).toFixed(2);
+        }
+
+
+        /* RECENT ROUTES */
+
+        const table =
+            document.getElementById("recentRoutes");
+
+        if(!table) return;
+
+
+        const routes =
+            data.recent_routes || [];
+
+
+        if(routes.length === 0){
+
+            table.innerHTML = `
+                <tr>
+                    <td colspan="5"
+                        style="
+                        text-align:center;
+                        color:#68739e;
+                        padding:30px;
+                        ">
+                        No routes searched yet.
+                    </td>
+                </tr>
+            `;
+
+            return;
+        }
+
+
+        table.innerHTML =
+            routes.map(
+                function(route,index){
+
+                    const source =
+                        route.source || "-";
+
+                    const destination =
+                        route.destination || "-";
+
+                    const algorithm =
+                        route.algorithm || "-";
+
+                    const distance =
+                        route.distance != null
+                        ? Number(
+                            route.distance
+                          ).toFixed(2) + " km"
+                        : "-";
+
+
+                    return `
+                        <tr>
+
+                            <td>
+                                ${index + 1}
+                            </td>
+
+                            <td>
+                                <div class="route-source">
+                                    ${escapeHTML(source)}
+                                </div>
+                            </td>
+
+                            <td>
+                                <div class="route-destination">
+                                    ${escapeHTML(destination)}
+                                </div>
+                            </td>
+
+                            <td>
+                                <span class="algorithm-badge">
+                                    ${escapeHTML(algorithm)}
+                                </span>
+                            </td>
+
+                            <td>
+                                ${escapeHTML(distance)}
+                            </td>
+
+                        </tr>
+                    `;
+                }
+            ).join("");
+
+
+        /* UPDATE ALGORITHM CHART */
+
+        /* UPDATE ALGORITHM CHART */
+
+if (data.algorithm_usage) {
+
+    const usage =
+        data.algorithm_usage;
+
+
+    const values = [
+
+        usage["BFS"] || 0,
+
+        usage["DFS"] || 0,
+
+        usage["Best First Search"] || 0,
+
+        usage["A* Search"] || 0
+
+    ];
+
+
+    /* =========================
+       BAR CHART
+    ========================= */
+
+    if (
+        typeof algorithmChart !==
+        "undefined" &&
+        algorithmChart
+    ) {
+
+        algorithmChart
+            .data
+            .datasets[0]
+            .data = values;
+
+        algorithmChart.update();
+
+    }
+
+
+    /* =========================
+       DISTRIBUTION CHART
+    ========================= */
+
+    if (
+        typeof distributionChart !==
+        "undefined" &&
+        distributionChart
+    ) {
+
+        distributionChart
+            .data
+            .datasets[0]
+            .data = values;
+
+        distributionChart.update();
+
+    }
+
+}
+    }
+    catch(error){
+
+        console.error(
+            "Dashboard data error:",
+            error
+        );
+
+    }
+
+}
+
+/* =========================
+   TRAFFIC CHART
+========================= */
+
+new Chart(
+
+    document.getElementById(
+        "trafficChart"
+    ),
+
+    {
+
+        type:
+            "doughnut",
+
+
+        data:{
+
+            labels:[
+                "Live traffic unavailable"
+            ],
+
+
+            datasets:[
+
+                {
+
+                    data:[
+                        1
+                    ],
+
+
+                    backgroundColor:[
+                        "#39456d"
+                    ],
+
+
+                    borderWidth:
+                        0
+
+                }
+
+            ]
+
+        },
+
+
+        options:{
+
+            responsive:
+                true,
+
+
+            cutout:
+                "68%",
+
+
+            plugins:{
+
+                legend:{
+
+                    position:
+                        "bottom",
+
+
+                    labels:{
+
+                        color:
+                            "#aeb6df",
+
+
+                        padding:
+                            15,
+
+
+                        font:{
+                            size:10
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+);
+
+
+/* =========================
+   ALGORITHM CHART
+========================= */
+
+const algorithmChart =
+    new Chart(
+
+        document.getElementById(
+            "algorithmChart"
+        ),
+
+        {
+
+            type:
+                "bar",
+
+
+            data:{
+
+                labels:[
+                    "BFS",
+                    "DFS",
+                    "Best First",
+                    "A*"
+                ],
+
+
+                datasets:[
+
+                    {
+
+                        label:
+                            "Routes",
+
+
+                        data:[
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+
+
+                        backgroundColor:[
+
+                            "#22c55e",
+                            "#f97316",
+                            "#06b6d4",
+                            "#8b5cf6"
+
+                        ],
+
+
+                        borderRadius:
+                            8
+
+                    }
+
+                ]
+
+            },
+
+
+            options:{
+
+                responsive:
+                    true,
+
+
+                plugins:{
+
+                    legend:{
+                        display:false
+                    }
+
+                },
+
+
+                scales:{
+
+                    x:{
+
+                        ticks:{
+                            color:"#8791bc"
+                        },
+
+
+                        grid:{
+                            display:false
+                        }
+
+                    },
+
+
+                    y:{
+
+                        beginAtZero:
+                            true,
+
+
+                        ticks:{
+                            color:"#8791bc"
+                        },
+
+
+                        grid:{
+                            color:"#20274d"
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    );
+
+
+/* =========================
+   DISTRIBUTION CHART
+========================= */
+
+const distributionChart =
+    new Chart(
+
+        document.getElementById(
+            "distributionChart"
+        ),
+
+        {
+
+            type:
+                "doughnut",
+
+
+            data:{
+
+                labels:[
+
+                    "BFS",
+                    "DFS",
+                    "Best First",
+                    "A*"
+
+                ],
+
+
+                datasets:[
+
+                    {
+
+                        data:[
+
+                            0,
+                            0,
+                            0,
+                            0
+
+                        ],
+
+
+                        backgroundColor:[
+
+                            "#22c55e",
+                            "#f97316",
+                            "#06b6d4",
+                            "#8b5cf6"
+
+                        ],
+
+
+                        borderWidth:
+                            0
+
+                    }
+
+                ]
+
+            },
+
+
+            options:{
+
+                responsive:
+                    true,
+
+
+                cutout:
+                    "65%",
+
+
+                plugins:{
+
+                    legend:{
+
+                        position:
+                            "bottom",
+
+
+                        labels:{
+
+                            color:
+                                "#aeb6df",
+
+
+                            padding:
+                                12,
+
+
+                            font:{
+                                size:10
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    );
+
+
+/* =========================
+   UPDATE ALGORITHM CHARTS
+========================= */
+
+function updateAlgorithmCharts(){
+
+    const routes =
+        getRouteHistory();
+
+
+    let bfs = 0;
+
+    let dfs = 0;
+
+    let bestFirst = 0;
+
+    let astar = 0;
+
+
+    routes.forEach(
+        function(route){
+
+            const algorithm =
+                String(
+                    route.algorithm ||
+                    ""
+                )
+                .toLowerCase();
+
+
+            if(
+                algorithm.includes(
+                    "bfs"
+                )
+            ){
+
+                bfs++;
+
+            }
+
+            else if(
+                algorithm.includes(
+                    "dfs"
+                )
+            ){
+
+                dfs++;
+
+            }
+
+            else if(
+                algorithm.includes(
+                    "best"
+                )
+            ){
+
+                bestFirst++;
+
+            }
+
+            else if(
+
+                algorithm.includes(
+                    "a*"
+                )
+
+                ||
+
+                algorithm.includes(
+                    "astar"
+                )
+
+            ){
+
+                astar++;
+
+            }
+
+        }
+    );
+
+
+    const values = [
+
+        bfs,
+        dfs,
+        bestFirst,
+        astar
+
+    ];
+
+
+    algorithmChart
+        .data
+        .datasets[0]
+        .data = values;
+
+
+    algorithmChart.update();
+
+
+    distributionChart
+        .data
+        .datasets[0]
+        .data = values;
+
+
+    distributionChart.update();
+
+}
+
+
+/* =========================
+   LOGOUT
+========================= */
+
+function logoutUser(){
+
+    window.location.href =
+        "login.html";
+
+}
+
+
+/* =========================
+   START DASHBOARD
+========================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        loadDashboardRoutes();
+
+    }
+);
+
+</script>
+
+</body>
+
+</html>

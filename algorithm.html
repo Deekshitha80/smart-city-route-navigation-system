@@ -1,0 +1,2105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Route Algorithms - Smart City</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+
+<style>
+
+/* =========================================================
+   COMMON DASHBOARD SIDEBAR
+========================================================= */
+
+.sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 250px !important;
+    height: 100vh !important;
+
+    background: linear-gradient(
+        180deg,
+        #111936 0%,
+        #16285a 100%
+    ) !important;
+
+    padding: 28px 18px !important;
+    box-sizing: border-box !important;
+
+    color: white !important;
+    z-index: 9999 !important;
+
+    overflow-y: auto !important;
+}
+
+
+.sidebar .logo {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+
+    padding: 5px 8px 28px !important;
+}
+
+
+.sidebar .logo-icon {
+    width: 48px !important;
+    height: 48px !important;
+
+    border-radius: 14px !important;
+
+    background: #1769ff !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    flex-shrink: 0 !important;
+
+    box-shadow:
+        0 5px 18px
+        rgba(23,105,255,0.35) !important;
+}
+
+
+.sidebar .logo-icon i {
+    color: white !important;
+    font-size: 20px !important;
+}
+
+
+.sidebar .logo h4 {
+    margin: 0 !important;
+
+    color: white !important;
+
+    font-size: 18px !important;
+    font-weight: 700 !important;
+}
+
+
+.sidebar .logo span {
+    display: block !important;
+
+    margin-top: 3px !important;
+
+    color: #9da8c7 !important;
+
+    font-size: 11px !important;
+}
+
+
+.sidebar .menu-title {
+    color: #8793b7 !important;
+
+    font-size: 11px !important;
+
+    text-transform: uppercase !important;
+
+    letter-spacing: 1.5px !important;
+
+    margin: 12px 10px 10px !important;
+}
+
+
+.sidebar .nav-link {
+    display: flex !important;
+    align-items: center !important;
+
+    gap: 14px !important;
+
+    width: 100% !important;
+    height: 48px !important;
+
+    padding: 0 14px !important;
+    margin-bottom: 5px !important;
+
+    box-sizing: border-box !important;
+
+    border-radius: 10px !important;
+
+    color: #c9d2ec !important;
+
+    text-decoration: none !important;
+
+    font-size: 14px !important;
+
+    transition: all .25s ease !important;
+}
+
+
+.sidebar .nav-link i {
+    width: 22px !important;
+
+    text-align: center !important;
+
+    font-size: 17px !important;
+
+    color: #d7e0f7 !important;
+}
+
+
+.sidebar .nav-link:hover {
+    background: rgba(47,105,255,.16) !important;
+
+    color: white !important;
+}
+
+
+.sidebar .nav-link.active {
+    background:
+        linear-gradient(
+            90deg,
+            #1769ff,
+            #216cff
+        ) !important;
+
+    color: white !important;
+
+    box-shadow:
+        0 6px 18px
+        rgba(23,105,255,.28) !important;
+}
+
+
+.sidebar .nav-link.active i {
+    color: white !important;
+}
+
+
+.sidebar .admin-box {
+    margin-top: 28px !important;
+
+    padding: 14px !important;
+
+    border-radius: 14px !important;
+
+    background:
+        rgba(255,255,255,.07) !important;
+
+    border:
+        1px solid
+        rgba(255,255,255,.06) !important;
+}
+
+
+.sidebar .admin-info {
+    display: flex !important;
+    align-items: center !important;
+
+    gap: 10px !important;
+
+    margin-bottom: 12px !important;
+}
+
+
+.sidebar .admin-avatar {
+    width: 38px !important;
+    height: 38px !important;
+
+    border-radius: 50% !important;
+
+    background: #8ec5ff !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    flex-shrink: 0 !important;
+}
+
+
+.sidebar .admin-avatar i {
+    color: white !important;
+    font-size: 16px !important;
+}
+
+
+.sidebar .admin-name {
+    color: white !important;
+
+    font-size: 14px !important;
+
+    font-weight: 600 !important;
+}
+
+
+.sidebar .admin-role {
+    color: #aab5d0 !important;
+
+    font-size: 11px !important;
+
+    margin-top: 2px !important;
+}
+
+
+.sidebar .logout {
+    width: 100% !important;
+
+    border: none !important;
+
+    border-radius: 9px !important;
+
+    padding: 10px !important;
+
+    background:
+        rgba(255,255,255,.06) !important;
+
+    color: #dce3f5 !important;
+
+    font-size: 13px !important;
+
+    cursor: pointer !important;
+}
+
+
+.sidebar .logout i {
+    margin-right: 7px !important;
+}
+
+
+.sidebar .logout:hover {
+    background:
+        rgba(255,255,255,.12) !important;
+
+    color: white !important;
+}
+
+
+.main-content {
+    margin-left: 250px !important;
+
+    min-height: 100vh !important;
+
+    box-sizing: border-box !important;
+}
+
+
+/* =========================================================
+   ALGORITHM PAGE
+========================================================= */
+
+.algorithm-page {
+    background: #f5f7fc;
+
+    padding: 32px;
+
+    color: #17213c;
+}
+
+
+/* HEADER */
+
+.algorithm-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 25px;
+}
+
+
+.algorithm-header h1 {
+    margin: 0;
+
+    font-size: 30px;
+
+    font-weight: 750;
+
+    color: #17213c;
+}
+
+
+.algorithm-header p {
+    margin: 7px 0 0;
+
+    color: #71809d;
+
+    font-size: 14px;
+}
+
+
+.online-status {
+    background: #eafaf0;
+
+    color: #168548;
+
+    padding: 10px 16px;
+
+    border-radius: 30px;
+
+    font-size: 13px;
+
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   INTRODUCTION
+========================================================= */
+
+.intro-card {
+    background:
+        linear-gradient(
+            135deg,
+            #ffffff,
+            #f3f7ff
+        );
+
+    border: 1px solid #e4eaf5;
+
+    border-radius: 20px;
+
+    padding: 25px 28px;
+
+    margin-bottom: 25px;
+
+    box-shadow:
+        0 8px 25px
+        rgba(30,55,100,.06);
+}
+
+
+.intro-top {
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+}
+
+
+.intro-icon {
+    width: 52px;
+    height: 52px;
+
+    border-radius: 15px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #1769ff,
+            #6c8cff
+        );
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: white;
+
+    font-size: 22px;
+
+    box-shadow:
+        0 7px 18px
+        rgba(23,105,255,.25);
+}
+
+
+.intro-card h2 {
+    margin: 0;
+
+    font-size: 21px;
+}
+
+
+.intro-card p {
+    margin: 5px 0 0;
+
+    color: #687792;
+
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   HOW IT WORKS
+========================================================= */
+
+.flow-card {
+    background: white;
+
+    border-radius: 20px;
+
+    padding: 23px;
+
+    margin-bottom: 25px;
+
+    border: 1px solid #e5eaf3;
+
+    box-shadow:
+        0 8px 25px
+        rgba(30,55,100,.05);
+}
+
+
+.flow-title {
+    text-align: center;
+
+    margin-bottom: 22px;
+}
+
+
+.flow-title h3 {
+    margin: 0;
+
+    font-size: 19px;
+}
+
+
+.flow-title p {
+    margin: 5px 0 0;
+
+    color: #7b879f;
+
+    font-size: 13px;
+}
+
+
+.flow {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 12px;
+
+    flex-wrap: wrap;
+}
+
+
+.flow-step {
+    min-width: 150px;
+
+    padding: 17px 15px;
+
+    text-align: center;
+
+    border-radius: 15px;
+
+    background: #f7f9fd;
+
+    border: 1px solid #e7ebf3;
+}
+
+
+.flow-step i {
+    font-size: 24px;
+
+    color: #1769ff;
+
+    margin-bottom: 8px;
+}
+
+
+.flow-step strong {
+    display: block;
+
+    font-size: 13px;
+}
+
+
+.flow-step span {
+    display: block;
+
+    color: #7b879f;
+
+    font-size: 11px;
+
+    margin-top: 4px;
+}
+
+
+.flow-arrow {
+    color: #9aa8c1;
+
+    font-size: 20px;
+}
+
+
+/* =========================================================
+   ALGORITHM CARDS
+========================================================= */
+
+.section-heading {
+    margin: 30px 0 15px;
+}
+
+
+.section-heading h2 {
+    margin: 0;
+
+    font-size: 22px;
+}
+
+
+.section-heading p {
+    margin: 5px 0 0;
+
+    color: #74819a;
+
+    font-size: 13px;
+}
+
+
+.algorithm-cards {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 17px;
+
+    margin-bottom: 28px;
+}
+
+
+.algo-card {
+    background: white;
+
+    border: 2px solid transparent;
+
+    border-radius: 20px;
+
+    padding: 21px;
+
+    box-shadow:
+        0 8px 25px
+        rgba(30,55,100,.06);
+
+    transition: .25s ease;
+
+    position: relative;
+
+    overflow: hidden;
+}
+
+
+.algo-card:hover {
+    transform: translateY(-5px);
+
+    box-shadow:
+        0 14px 30px
+        rgba(30,55,100,.12);
+}
+
+
+.algo-card.bfs {
+    border-color: #d7f2df;
+}
+
+
+.algo-card.dfs {
+    border-color: #dce8ff;
+}
+
+
+.algo-card.best {
+    border-color: #ffe6c7;
+}
+
+
+.algo-card.astar {
+    border-color: #e7dcff;
+}
+
+
+.algo-icon {
+    width: 52px;
+    height: 52px;
+
+    border-radius: 15px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 22px;
+
+    margin-bottom: 15px;
+}
+
+
+.bfs .algo-icon {
+    background: #e4f8eb;
+    color: #20a354;
+}
+
+
+.dfs .algo-icon {
+    background: #e7efff;
+    color: #3374e8;
+}
+
+
+.best .algo-icon {
+    background: #fff0dd;
+    color: #ef8a16;
+}
+
+
+.astar .algo-icon {
+    background: #eee6ff;
+    color: #7945db;
+}
+
+
+.algo-card h3 {
+    margin: 0;
+
+    font-size: 17px;
+}
+
+
+.algo-name {
+    color: #77849c;
+
+    font-size: 11px;
+
+    margin-top: 3px;
+}
+
+
+.algo-card p {
+    color: #687792;
+
+    font-size: 12px;
+
+    line-height: 1.6;
+
+    min-height: 58px;
+}
+
+
+.algo-visual {
+    background: #f7f9fd;
+
+    border-radius: 12px;
+
+    padding: 12px;
+
+    text-align: center;
+
+    font-size: 20px;
+
+    letter-spacing: 5px;
+
+    margin: 12px 0;
+}
+
+
+.algo-use {
+    font-size: 11px;
+
+    color: #596780;
+
+    line-height: 1.5;
+}
+
+
+.algo-use strong {
+    color: #273654;
+}
+
+
+.listen-btn {
+    margin-top: 13px;
+
+    width: 100%;
+
+    border: none;
+
+    padding: 9px;
+
+    border-radius: 9px;
+
+    background: #edf3ff;
+
+    color: #1769ff;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    font-size: 12px;
+
+    transition: .2s;
+}
+
+
+.listen-btn:hover {
+    background: #1769ff;
+
+    color: white;
+}
+
+
+.recommended {
+    position: absolute;
+
+    top: 13px;
+
+    right: 13px;
+
+    background: #7945db;
+
+    color: white;
+
+    padding: 4px 8px;
+
+    border-radius: 20px;
+
+    font-size: 9px;
+
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   CHOOSE ALGORITHM
+========================================================= */
+
+.choose-card {
+    background:
+        linear-gradient(
+            135deg,
+            #111936,
+            #1d3474
+        );
+
+    color: white;
+
+    border-radius: 20px;
+
+    padding: 25px;
+
+    margin-bottom: 30px;
+
+    box-shadow:
+        0 12px 30px
+        rgba(17,25,54,.15);
+}
+
+
+.choose-card h2 {
+    margin: 0;
+
+    font-size: 20px;
+}
+
+
+.choose-card > p {
+    margin: 6px 0 20px;
+
+    color: #bac7e6;
+
+    font-size: 13px;
+}
+
+
+.choose-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 12px;
+}
+
+
+.choose-item {
+    background:
+        rgba(255,255,255,.08);
+
+    border:
+        1px solid
+        rgba(255,255,255,.09);
+
+    border-radius: 13px;
+
+    padding: 14px;
+}
+
+
+.choose-item strong {
+    display: block;
+
+    margin-bottom: 5px;
+}
+
+
+.choose-item span {
+    color: #c2cce3;
+
+    font-size: 11px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   EXISTING VISUALIZER
+========================================================= */
+
+.algorithm-layout {
+    display: grid;
+
+    grid-template-columns: 280px 1fr;
+
+    gap: 22px;
+
+    align-items: start;
+}
+
+
+.algorithm-panel,
+.visualizer-card {
+    background: white;
+
+    border-radius: 20px;
+
+    border: 1px solid #e3e8f1;
+
+    box-shadow:
+        0 8px 25px
+        rgba(30,55,100,.06);
+}
+
+
+.algorithm-panel {
+    padding: 22px;
+}
+
+
+.algorithm-panel h2,
+.visualizer-card h2 {
+    margin: 0 0 18px;
+
+    font-size: 19px;
+}
+
+
+.algorithm-panel label {
+    display: block;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    margin-bottom: 7px;
+
+    color: #52627f;
+}
+
+
+#algorithmSelect {
+    width: 100%;
+
+    padding: 12px;
+
+    border: 1px solid #dbe2ee;
+
+    border-radius: 10px;
+
+    background: #f8faff;
+
+    outline: none;
+
+    font-size: 13px;
+}
+
+
+.algorithm-description {
+    margin: 16px 0;
+
+    padding: 13px;
+
+    background: #f5f8ff;
+
+    border-radius: 12px;
+
+    color: #66748f;
+
+    font-size: 12px;
+
+    line-height: 1.6;
+}
+
+
+.visualize-btn {
+    width: 100%;
+
+    border: none;
+
+    border-radius: 10px;
+
+    padding: 12px;
+
+    margin-top: 8px;
+
+    background: #1769ff;
+
+    color: white;
+
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+
+.visualize-btn:hover {
+    opacity: .92;
+}
+
+
+.algorithm-status {
+    margin-top: 15px;
+
+    padding: 11px;
+
+    background: #f5f7fb;
+
+    border-radius: 10px;
+
+    color: #71809b;
+
+    font-size: 11px;
+}
+
+
+.visualizer-card {
+    padding: 22px;
+}
+
+
+.graph-area {
+    height: 430px;
+
+    border-radius: 15px;
+
+    background: #f8faff;
+
+    border: 1px solid #e6ebf3;
+
+    overflow: hidden;
+}
+
+
+#graphCanvas {
+    width: 100%;
+    height: 100%;
+}
+
+
+.stats-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 12px;
+
+    margin-top: 18px;
+}
+
+
+.stat-box {
+    background: #f7f9fd;
+
+    border-radius: 13px;
+
+    padding: 15px;
+}
+
+
+.stat-box span {
+    display: block;
+
+    color: #8792a8;
+
+    font-size: 11px;
+}
+
+
+.stat-box strong {
+    display: block;
+
+    color: #1c2a48;
+
+    font-size: 19px;
+
+    margin-top: 5px;
+}
+
+
+.legend {
+    display: flex;
+
+    gap: 18px;
+
+    flex-wrap: wrap;
+
+    margin-top: 18px;
+}
+
+
+.legend-item {
+    font-size: 11px;
+
+    color: #77839a;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+}
+
+
+.legend-dot {
+    width: 10px;
+    height: 10px;
+
+    border-radius: 50%;
+
+    display: inline-block;
+}
+
+
+.start-dot {
+    background: #4caf73;
+}
+
+
+.visited-dot {
+    background: #4384e8;
+}
+
+
+.path-dot {
+    background: #e5b84c;
+}
+
+
+.unvisited-dot {
+    background: #cbd3df;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:1100px) {
+
+    .algorithm-cards,
+    .choose-grid {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+    .algorithm-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+@media(max-width:750px) {
+
+    .sidebar {
+        width: 220px !important;
+    }
+
+    .main-content {
+        margin-left: 220px !important;
+    }
+
+    .algorithm-page {
+        padding: 20px;
+    }
+
+    .algorithm-header {
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 12px;
+    }
+
+    .algorithm-cards,
+    .choose-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .flow {
+        flex-direction: column;
+    }
+
+    .flow-arrow {
+        transform: rotate(90deg);
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+    <!-- =========================================================
+     SIDEBAR
+========================================================= -->
+
+<aside class="sidebar">
+
+    <div class="logo">
+
+        <div class="logo-icon">
+            <i class="fa-solid fa-route"></i>
+        </div>
+
+        <div>
+            <h4>SMART CITY</h4>
+            <span>Route Navigation</span>
+        </div>
+
+    </div>
+
+
+    <div class="menu-title">Main Menu</div>
+
+
+    <a href="dashboard.html" class="nav-link">
+        <i class="fa-solid fa-house"></i>
+        <span>Dashboard</span>
+    </a>
+
+
+    <a href="map.html" class="nav-link">
+        <i class="fa-solid fa-map"></i>
+        <span>Map View</span>
+    </a>
+
+
+    <a href="route-finder.html" class="nav-link">
+        <i class="fa-solid fa-route"></i>
+        <span>Route Finder</span>
+    </a>
+
+
+    <a href="traffic.html" class="nav-link">
+        <i class="fa-solid fa-traffic-light"></i>
+        <span>Traffic Status</span>
+    </a>
+
+
+    <!-- ACTIVE PAGE -->
+
+    <a href="algorithm.html" class="nav-link active">
+        <i class="fa-solid fa-brain"></i>
+        <span>Route Algorithms</span>
+    </a>
+
+
+    <a href="history.html" class="nav-link">
+        <i class="fa-solid fa-clock-rotate-left"></i>
+        <span>Route History</span>
+    </a>
+
+
+    <a href="reports.html" class="nav-link">
+        <i class="fa-solid fa-chart-column"></i>
+        <span>Reports</span>
+    </a>
+
+
+    <div class="menu-title">System</div>
+
+
+    <a href="settings.html" class="nav-link">
+        <i class="fa-solid fa-gear"></i>
+        <span>Settings</span>
+    </a>
+
+
+    <!-- ADMIN -->
+
+    <div class="admin-box">
+
+        <div class="admin-info">
+
+            <div class="admin-avatar">
+                <i class="fa-solid fa-user"></i>
+            </div>
+
+            <div>
+
+                <div class="admin-name">
+                    Admin
+                </div>
+
+                <div class="admin-role">
+                    Administrator
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <button class="logout"
+                onclick="logoutUser()">
+
+            <i class="fa-solid fa-right-from-bracket"></i>
+
+            Logout
+
+        </button>
+
+    </div>
+
+</aside>
+
+
+<!-- =========================================================
+     MAIN CONTENT
+========================================================= -->
+
+<main class="main-content algorithm-page">
+
+
+    <!-- HEADER -->
+
+    <div class="algorithm-header">
+
+        <div>
+
+            <h1>
+                Route Algorithms
+            </h1>
+
+            <p>
+                Understand how our system finds routes in a simple way.
+            </p>
+
+        </div>
+
+
+        <div class="online-status">
+
+            ● Algorithm System Ready
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         INTRODUCTION
+    ====================================================== -->
+
+    <div class="intro-card">
+
+        <div class="intro-top">
+
+            <div class="intro-icon">
+
+                <i class="fa-solid fa-route"></i>
+
+            </div>
+
+
+            <div>
+
+                <h2>
+                    How does our system find a route?
+                </h2>
+
+                <p>
+                    Our system checks different possible paths
+                    between your starting point and destination.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         SIMPLE ROUTE FLOW
+    ====================================================== -->
+
+    <div class="flow-card">
+
+        <div class="flow-title">
+
+            <h3>
+                🗺️ Simple Route Finding Process
+            </h3>
+
+            <p>
+                You don't need technical knowledge to understand this.
+            </p>
+
+        </div>
+
+
+        <div class="flow">
+
+
+            <!-- STEP 1 -->
+
+            <div class="flow-step">
+
+                <i class="fa-solid fa-location-dot"></i>
+
+                <strong>
+                    Start Location
+                </strong>
+
+                <span>
+                    Where you are
+                </span>
+
+            </div>
+
+
+            <div class="flow-arrow">
+
+                <i class="fa-solid fa-arrow-right"></i>
+
+            </div>
+
+
+            <!-- STEP 2 -->
+
+            <div class="flow-step">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <strong>
+                    Search Paths
+                </strong>
+
+                <span>
+                    Check possible roads
+                </span>
+
+            </div>
+
+
+            <div class="flow-arrow">
+
+                <i class="fa-solid fa-arrow-right"></i>
+
+            </div>
+
+
+            <!-- STEP 3 -->
+
+            <div class="flow-step">
+
+                <i class="fa-solid fa-bullseye"></i>
+
+                <strong>
+                    Find Destination
+                </strong>
+
+                <span>
+                    Reach your location
+                </span>
+
+            </div>
+
+
+            <div class="flow-arrow">
+
+                <i class="fa-solid fa-arrow-right"></i>
+
+            </div>
+
+
+            <!-- STEP 4 -->
+
+            <div class="flow-step">
+
+                <i class="fa-solid fa-circle-check"></i>
+
+                <strong>
+                    Show Route
+                </strong>
+
+                <span>
+                    Display the path
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         ALGORITHM INTRO
+    ====================================================== -->
+
+    <div class="section-heading">
+
+        <h2>
+            🧠 Four Ways to Find a Route
+        </h2>
+
+        <p>
+            Each algorithm follows a different method
+            to explore possible paths.
+        </p>
+
+    </div>
+
+
+    <!-- =====================================================
+         ALGORITHM CARDS
+    ====================================================== -->
+
+    <div class="algorithm-cards">
+
+
+        <!-- =================================================
+             BFS
+        ================================================== -->
+
+        <div class="algo-card bfs">
+
+            <div class="algo-icon">
+
+                <i class="fa-solid fa-layer-group"></i>
+
+            </div>
+
+
+            <h3>
+                BFS
+            </h3>
+
+
+            <div class="algo-name">
+                Breadth First Search
+            </div>
+
+
+            <p>
+                Checks nearby locations first and then
+                moves to the next level of locations.
+            </p>
+
+
+            <div class="algo-visual">
+
+                🟢 → 🔵 → 🔵 → 🔵
+
+            </div>
+
+
+            <div class="algo-use">
+
+                <strong>
+                    Simple idea:
+                </strong>
+
+                Explore nearby roads first.
+
+            </div>
+
+
+            <button class="listen-btn"
+                    onclick="speakAlgorithm('bfs')">
+
+                🔊 Listen
+
+            </button>
+
+        </div>
+
+
+        <!-- =================================================
+             DFS
+        ================================================== -->
+
+        <div class="algo-card dfs">
+
+            <div class="algo-icon">
+
+                <i class="fa-solid fa-arrows-down-to-line"></i>
+
+            </div>
+
+
+            <h3>
+                DFS
+            </h3>
+
+
+            <div class="algo-name">
+                Depth First Search
+            </div>
+
+
+            <p>
+                Follows one possible path deeply before
+                coming back and trying another path.
+            </p>
+
+
+            <div class="algo-visual">
+
+                🟢 → 🔵 → 🔵 → 🎯
+
+            </div>
+
+
+            <div class="algo-use">
+
+                <strong>
+                    Simple idea:
+                </strong>
+
+                Follow one road deeply.
+
+            </div>
+
+
+            <button class="listen-btn"
+                    onclick="speakAlgorithm('dfs')">
+
+                🔊 Listen
+
+            </button>
+
+        </div>
+
+
+        <!-- =================================================
+             BEST FIRST
+        ================================================== -->
+
+        <div class="algo-card best">
+
+            <div class="algo-icon">
+
+                <i class="fa-solid fa-bullseye"></i>
+
+            </div>
+
+
+            <h3>
+                Best First
+            </h3>
+
+
+            <div class="algo-name">
+                Best First Search
+            </div>
+
+
+            <p>
+                Gives priority to the location that appears
+                closest to the destination.
+            </p>
+
+
+            <div class="algo-visual">
+
+                📍 → 🛣️ → 🎯
+
+            </div>
+
+
+            <div class="algo-use">
+
+                <strong>
+                    Simple idea:
+                </strong>
+
+                Move towards the destination.
+
+            </div>
+
+
+            <button class="listen-btn"
+                    onclick="speakAlgorithm('best')">
+
+                🔊 Listen
+
+            </button>
+
+        </div>
+
+
+        <!-- =================================================
+             A STAR
+        ================================================== -->
+
+        <div class="algo-card astar">
+
+            <div class="recommended">
+
+                ⭐ RECOMMENDED
+
+            </div>
+
+
+            <div class="algo-icon">
+
+                <i class="fa-solid fa-star"></i>
+
+            </div>
+
+
+            <h3>
+                A* Search
+            </h3>
+
+
+            <div class="algo-name">
+                A-Star Algorithm
+            </div>
+
+
+            <p>
+                Considers both the distance already travelled
+                and the estimated distance to the destination.
+            </p>
+
+
+            <div class="algo-visual">
+
+                📍 → 🛣️ → 🛣️ → 🎯
+
+            </div>
+
+
+            <div class="algo-use">
+
+                <strong>
+                    Simple idea:
+                </strong>
+
+                Try to find an efficient route.
+
+            </div>
+
+
+            <button class="listen-btn"
+                    onclick="speakAlgorithm('astar')">
+
+                🔊 Listen
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         WHICH ALGORITHM
+    ====================================================== -->
+
+    <div class="choose-card">
+
+        <h2>
+            ⭐ Which algorithm should I choose?
+        </h2>
+
+
+        <p>
+            Don't worry about the technical names.
+            Here is the simple meaning.
+        </p>
+
+
+        <div class="choose-grid">
+
+
+            <div class="choose-item">
+
+                <strong>
+                    🟢 BFS
+                </strong>
+
+                <span>
+                    Explore nearby locations first.
+                </span>
+
+            </div>
+
+
+            <div class="choose-item">
+
+                <strong>
+                    🔵 DFS
+                </strong>
+
+                <span>
+                    Explore one possible route deeply.
+                </span>
+
+            </div>
+
+
+            <div class="choose-item">
+
+                <strong>
+                    🟠 Best First
+                </strong>
+
+                <span>
+                    Prefer locations that look closer
+                    to the destination.
+                </span>
+
+            </div>
+
+
+            <div class="choose-item">
+
+                <strong>
+                    🟣 A* ⭐
+                </strong>
+
+                <span>
+                    Uses travelled distance and estimated
+                    remaining distance.
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         VISUALIZER TITLE
+    ====================================================== -->
+
+    <div class="section-heading">
+
+        <h2>
+            🎯 Try the Algorithm Visualizer
+        </h2>
+
+        <p>
+            Select an algorithm and watch how it explores
+            the search graph.
+        </p>
+
+    </div>
+
+
+    <!-- =====================================================
+         VISUALIZER
+    ====================================================== -->
+
+    <div class="algorithm-layout">
+
+
+        <!-- LEFT CONTROL PANEL -->
+
+        <div class="algorithm-panel">
+
+            <h2>
+                Algorithm Visualizer
+            </h2>
+
+
+            <label for="algorithmSelect">
+
+                Select Algorithm
+
+            </label>
+
+
+            <select id="algorithmSelect">
+
+                <option value="bfs">
+                    Breadth First Search (BFS)
+                </option>
+
+                <option value="dfs">
+                    Depth First Search (DFS)
+                </option>
+
+                <option value="best">
+                    Best First Search
+                </option>
+
+                <option value="astar">
+                    A* Search
+                </option>
+
+            </select>
+
+
+            <div id="algorithmDescription"
+                 class="algorithm-description">
+
+                BFS explores nearby nodes level by level.
+
+            </div>
+
+
+            <button id="startVisualization"
+                    class="visualize-btn">
+
+                ▶ START VISUALIZATION
+
+            </button>
+
+
+            <button id="resetVisualization"
+                    class="visualize-btn"
+                    style="background:#64748b;">
+
+                ↻ RESET
+
+            </button>
+
+
+            <div id="algorithmStatus"
+                 class="algorithm-status">
+
+                Ready to visualize.
+
+            </div>
+
+        </div>
+
+
+        <!-- RIGHT GRAPH -->
+
+        <div class="visualizer-card">
+
+            <h2>
+                Search Graph
+            </h2>
+
+
+            <div class="graph-area">
+
+                <canvas id="graphCanvas"></canvas>
+
+            </div>
+
+
+            <!-- STATS -->
+
+            <div class="stats-grid">
+
+
+                <div class="stat-box">
+
+                    <span>
+                        Nodes Visited
+                    </span>
+
+                    <strong id="nodesVisited">
+                        0
+                    </strong>
+
+                </div>
+
+
+                <div class="stat-box">
+
+                    <span>
+                        Path Length
+                    </span>
+
+                    <strong id="pathLength">
+                        0
+                    </strong>
+
+                </div>
+
+
+                <div class="stat-box">
+
+                    <span>
+                        Execution Time
+                    </span>
+
+                    <strong id="executionTime">
+                        0 ms
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- LEGEND -->
+
+            <div class="legend">
+
+
+                <div class="legend-item">
+
+                    <span class="legend-dot start-dot"></span>
+
+                    Start Node
+
+                </div>
+
+
+                <div class="legend-item">
+
+                    <span class="legend-dot visited-dot"></span>
+
+                    Visited Node
+
+                </div>
+
+
+                <div class="legend-item">
+
+                    <span class="legend-dot path-dot"></span>
+
+                    Final Path
+
+                </div>
+
+
+                <div class="legend-item">
+
+                    <span class="legend-dot unvisited-dot"></span>
+
+                    Unvisited Node
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+<!-- =========================================================
+     VOICE EXPLANATION
+========================================================= -->
+
+<script>
+
+function speakAlgorithm(type) {
+
+    if (!("speechSynthesis" in window)) {
+
+        alert(
+            "Voice explanation is not supported in this browser."
+        );
+
+        return;
+    }
+
+    // Stop previous speech
+    window.speechSynthesis.cancel();
+
+    let text = "";
+
+    if (type === "bfs") {
+
+        text =
+            "BFS means Breadth First Search. " +
+            "It checks nearby locations first and then moves " +
+            "to the next level. " +
+            "Think of it like checking roads around you step by step.";
+
+    }
+
+    else if (type === "dfs") {
+
+        text =
+            "DFS means Depth First Search. " +
+            "It follows one possible route deeply before coming " +
+            "back and trying another route.";
+
+    }
+
+    else if (type === "best") {
+
+        text =
+            "Best First Search chooses the location that appears " +
+            "closest to the destination. " +
+            "It tries to move towards the destination quickly.";
+
+    }
+
+    else if (type === "astar") {
+
+        text =
+            "A Star Search, or A star, considers both the distance " +
+            "already travelled and the estimated distance remaining " +
+            "to the destination. " +
+            "It is commonly used for efficient path finding.";
+
+    }
+
+
+    const speech =
+        new SpeechSynthesisUtterance(text);
+
+
+    speech.rate = 0.9;
+
+    speech.pitch = 1;
+
+    speech.volume = 1;
+
+
+    window.speechSynthesis.speak(speech);
+
+}
+
+</script>
+
+
+<!-- =========================================================
+     EXISTING PROJECT SCRIPTS
+========================================================= -->
+
+<script src="js/algorithm.js"></script>
+
+<script src="js/auth.js"></script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Route History | Smart City</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:"Segoe UI",Arial,sans-serif;
+    background:#f4f8ff;
+    color:#172554;
+}
+
+/* ================= SIDEBAR ================= */
+
+.sidebar{
+    position:fixed;
+    top:0;
+    left:0;
+    width:250px;
+    height:100vh;
+    background:linear-gradient(180deg,#111936 0%,#16285a 100%);
+    padding:28px 18px;
+    color:white;
+    z-index:9999;
+    overflow-y:auto;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:5px 8px 28px;
+}
+
+.logo-icon{
+    width:48px;
+    height:48px;
+    border-radius:14px;
+    background:#1769ff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+    box-shadow:0 5px 18px rgba(23,105,255,.35);
+}
+
+.logo-icon i{
+    color:white;
+    font-size:20px;
+}
+
+.logo h4{
+    margin:0;
+    color:white;
+    font-size:18px;
+    font-weight:700;
+}
+
+.logo span{
+    display:block;
+    margin-top:3px;
+    color:#9da8c7;
+    font-size:11px;
+}
+
+.menu-title{
+    color:#8793b7;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:1.5px;
+    margin:12px 10px 10px;
+}
+
+.nav-link{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    width:100%;
+    height:48px;
+    padding:0 14px;
+    margin-bottom:5px;
+    border-radius:10px;
+    color:#c9d2ec;
+    text-decoration:none;
+    font-size:14px;
+    transition:.25s;
+}
+
+.nav-link i{
+    width:22px;
+    text-align:center;
+    font-size:17px;
+    color:#d7e0f7;
+}
+
+.nav-link:hover{
+    background:rgba(47,105,255,.16);
+    color:white;
+}
+
+.nav-link.active{
+    background:linear-gradient(90deg,#1769ff,#216cff);
+    color:white;
+    box-shadow:0 6px 18px rgba(23,105,255,.28);
+}
+
+.nav-link.active i{
+    color:white;
+}
+
+/* ADMIN */
+
+.admin-box{
+    margin-top:28px;
+    padding:14px;
+    border-radius:14px;
+    background:rgba(255,255,255,.07);
+    border:1px solid rgba(255,255,255,.06);
+}
+
+.admin-info{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:12px;
+}
+
+.admin-avatar{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    background:#8ec5ff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.admin-avatar i{
+    color:white;
+    font-size:16px;
+}
+
+.admin-name{
+    color:white;
+    font-size:14px;
+    font-weight:600;
+}
+
+.admin-role{
+    color:#aab5d0;
+    font-size:11px;
+    margin-top:2px;
+}
+
+.logout{
+    width:100%;
+    border:none;
+    border-radius:9px;
+    padding:10px;
+    background:rgba(255,255,255,.06);
+    color:#dce3f5;
+    font-size:13px;
+    cursor:pointer;
+}
+
+.logout i{
+    margin-right:7px;
+}
+
+.logout:hover{
+    background:rgba(255,255,255,.12);
+    color:white;
+}
+
+/* ================= MAIN ================= */
+
+.main-content{
+    margin-left:250px;
+    min-height:100vh;
+    padding:34px 38px 50px;
+}
+
+/* ================= HEADER ================= */
+
+.page-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:28px;
+}
+
+.title-section{
+    display:flex;
+    align-items:center;
+    gap:16px;
+}
+
+.page-icon{
+    width:56px;
+    height:56px;
+    border-radius:16px;
+    background:#e7f0ff;
+    color:#1769ff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:25px;
+}
+
+.page-title{
+    margin:0;
+    font-size:30px;
+    font-weight:750;
+    color:#172554;
+}
+
+.page-subtitle{
+    margin:5px 0 0;
+    color:#64748b;
+    font-size:14px;
+}
+
+.clear-btn{
+    border:none;
+    background:linear-gradient(135deg,#1769ff,#216cff);
+    color:white;
+    padding:13px 20px;
+    border-radius:10px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    box-shadow:0 7px 18px rgba(23,105,255,.22);
+}
+
+.clear-btn i{
+    margin-right:8px;
+}
+
+/* ================= SUMMARY CARDS ================= */
+
+.summary-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:18px;
+    margin-bottom:22px;
+}
+
+.summary-card{
+    background:white;
+    border:1px solid #e3ebf7;
+    border-radius:16px;
+    padding:20px;
+    min-height:125px;
+    box-shadow:0 5px 18px rgba(31,70,120,.06);
+}
+
+.summary-content{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.summary-icon{
+    width:48px;
+    height:48px;
+    border-radius:13px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:21px;
+    flex-shrink:0;
+}
+
+.blue-icon{
+    background:#e8f2ff;
+    color:#1769ff;
+}
+
+.green-icon{
+    background:#e8faef;
+    color:#16a36a;
+}
+
+.purple-icon{
+    background:#f0e9ff;
+    color:#7c3aed;
+}
+
+.orange-icon{
+    background:#fff3df;
+    color:#f59e0b;
+}
+
+.summary-label{
+    color:#64748b;
+    font-size:13px;
+    font-weight:600;
+    margin-bottom:5px;
+}
+
+.summary-value{
+    color:#172554;
+    font-size:24px;
+    font-weight:750;
+}
+
+.summary-description{
+    color:#94a3b8;
+    font-size:11px;
+    margin-top:4px;
+}
+
+/* ================= SEARCH ================= */
+
+.search-card{
+    background:white;
+    border:1px solid #e3ebf7;
+    border-radius:16px;
+    padding:16px;
+    margin-bottom:20px;
+    box-shadow:0 5px 18px rgba(31,70,120,.05);
+}
+
+.search-row{
+    display:grid;
+    grid-template-columns:2fr 1fr 1fr auto;
+    gap:12px;
+}
+
+.search-box,
+.filter-box{
+    height:46px;
+    border:1px solid #dbe5f2;
+    border-radius:9px;
+    display:flex;
+    align-items:center;
+    background:white;
+}
+
+.search-box{
+    padding:0 14px;
+}
+
+.search-box i{
+    color:#64748b;
+    margin-right:9px;
+}
+
+.search-box input{
+    width:100%;
+    border:none;
+    outline:none;
+    font-size:13px;
+    color:#172554;
+}
+
+.filter-box{
+    padding:0 12px;
+}
+
+.filter-box select,
+.filter-box input{
+    width:100%;
+    border:none;
+    outline:none;
+    background:white;
+    color:#475569;
+    font-size:13px;
+}
+
+.search-btn{
+    height:46px;
+    padding:0 20px;
+    border:none;
+    border-radius:9px;
+    background:#1769ff;
+    color:white;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+}
+
+.search-btn i{
+    margin-right:6px;
+}
+
+/* ================= HISTORY TABLE ================= */
+
+.history-card{
+    background:white;
+    border:1px solid #e3ebf7;
+    border-radius:16px;
+    overflow:hidden;
+    box-shadow:0 5px 18px rgba(31,70,120,.06);
+}
+
+.history-header{
+    padding:20px 22px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:1px solid #e7edf6;
+}
+
+.history-header h2{
+    margin:0;
+    font-size:18px;
+    color:#172554;
+}
+
+.history-header p{
+    margin:5px 0 0;
+    color:#94a3b8;
+    font-size:12px;
+}
+
+.route-count{
+    padding:8px 13px;
+    background:#eef5ff;
+    color:#1769ff;
+    border-radius:8px;
+    font-size:12px;
+    font-weight:600;
+}
+
+.table-wrapper{
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    min-width:950px;
+    border-collapse:collapse;
+}
+
+th{
+    background:#f7faff;
+    color:#475569;
+    font-size:12px;
+    font-weight:700;
+    text-align:left;
+    padding:15px 18px;
+    border-bottom:1px solid #e4ebf5;
+}
+
+td{
+    padding:16px 18px;
+    color:#475569;
+    font-size:13px;
+    border-bottom:1px solid #edf2f7;
+}
+
+/* EMPTY STATE */
+
+.empty-state{
+    padding:65px 20px;
+    text-align:center;
+}
+
+.empty-icon{
+    width:70px;
+    height:70px;
+    margin:auto;
+    border-radius:50%;
+    background:#eef5ff;
+    color:#1769ff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:28px;
+}
+
+.empty-state h3{
+    margin:17px 0 6px;
+    color:#172554;
+    font-size:18px;
+}
+
+.empty-state p{
+    margin:0;
+    color:#94a3b8;
+    font-size:13px;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:1100px){
+
+    .summary-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .search-row{
+        grid-template-columns:1fr 1fr;
+    }
+}
+
+@media(max-width:700px){
+
+    .sidebar{
+        width:220px;
+    }
+
+    .main-content{
+        margin-left:220px;
+        padding:25px 20px;
+    }
+
+    .summary-grid{
+        grid-template-columns:1fr;
+    }
+
+    .search-row{
+        grid-template-columns:1fr;
+    }
+
+    .page-header{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:15px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= SIDEBAR ================= -->
+
+<aside class="sidebar">
+
+    <div class="logo">
+
+        <div class="logo-icon">
+            <i class="fa-solid fa-route"></i>
+        </div>
+
+        <div>
+            <h4>SMART CITY</h4>
+            <span>Route Navigation</span>
+        </div>
+
+    </div>
+
+    <div class="menu-title">
+        Main Menu
+    </div>
+
+    <a href="dashboard.html" class="nav-link">
+        <i class="fa-solid fa-house"></i>
+        <span>Dashboard</span>
+    </a>
+
+    <a href="map.html" class="nav-link">
+        <i class="fa-solid fa-map"></i>
+        <span>Map View</span>
+    </a>
+
+    <a href="route-finder.html" class="nav-link">
+        <i class="fa-solid fa-route"></i>
+        <span>Route Finder</span>
+    </a>
+
+    <a href="traffic.html" class="nav-link">
+        <i class="fa-solid fa-traffic-light"></i>
+        <span>Traffic Status</span>
+    </a>
+
+    <a href="algorithm.html" class="nav-link">
+        <i class="fa-solid fa-brain"></i>
+        <span>Route Algorithms</span>
+    </a>
+
+    <!-- ACTIVE -->
+    <a href="route-history.html" class="nav-link active">
+        <i class="fa-solid fa-clock-rotate-left"></i>
+        <span>Route History</span>
+    </a>
+
+    <a href="reports.html" class="nav-link">
+        <i class="fa-solid fa-chart-column"></i>
+        <span>Reports</span>
+    </a>
+
+    <div class="menu-title">
+        System
+    </div>
+
+    <a href="settings.html" class="nav-link">
+        <i class="fa-solid fa-gear"></i>
+        <span>Settings</span>
+    </a>
+
+    <div class="admin-box">
+
+        <div class="admin-info">
+
+            <div class="admin-avatar">
+                <i class="fa-solid fa-user"></i>
+            </div>
+
+            <div>
+                <div class="admin-name">
+                    Admin
+                </div>
+
+                <div class="admin-role">
+                    Administrator
+                </div>
+            </div>
+
+        </div>
+
+        <button class="logout" onclick="logoutUser()">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            Logout
+        </button>
+
+    </div>
+
+</aside>
+
+
+<!-- ================= MAIN CONTENT ================= -->
+
+<main class="main-content">
+
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+        <div class="title-section">
+
+            <div class="page-icon">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+            </div>
+
+            <div>
+
+                <h1 class="page-title">
+                    Route History
+                </h1>
+
+                <p class="page-subtitle">
+                    View and manage your searched routes
+                </p>
+
+            </div>
+
+        </div>
+
+        <button
+            class="clear-btn"
+            id="clearHistoryBtn"
+        >
+            <i class="fa-solid fa-trash-can"></i>
+            Clear All History
+        </button>
+
+    </div>
+
+
+    <!-- ================= SUMMARY ================= -->
+
+    <section class="summary-grid">
+
+        <div class="summary-card">
+
+            <div class="summary-content">
+
+                <div class="summary-icon blue-icon">
+                    <i class="fa-solid fa-route"></i>
+                </div>
+
+                <div>
+
+                    <div class="summary-label">
+                        Total Routes
+                    </div>
+
+                    <div
+                        class="summary-value"
+                        id="totalRoutes"
+                    >
+                        0
+                    </div>
+
+                    <div class="summary-description">
+                        Real searches
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div class="summary-content">
+
+                <div class="summary-icon green-icon">
+                    <i class="fa-solid fa-road"></i>
+                </div>
+
+                <div>
+
+                    <div class="summary-label">
+                        Total Distance
+                    </div>
+
+                    <div
+                        class="summary-value"
+                        id="totalDistance"
+                    >
+                        0 km
+                    </div>
+
+                    <div class="summary-description">
+                        From searched routes
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div class="summary-content">
+
+                <div class="summary-icon purple-icon">
+                    <i class="fa-solid fa-brain"></i>
+                </div>
+
+                <div>
+
+                    <div class="summary-label">
+                        Most Used Algorithm
+                    </div>
+
+                    <div
+                        class="summary-value"
+                        id="mostUsedAlgorithm"
+                    >
+                        —
+                    </div>
+
+                    <div class="summary-description">
+                        Based on real searches
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div class="summary-content">
+
+                <div class="summary-icon orange-icon">
+                    <i class="fa-regular fa-clock"></i>
+                </div>
+
+                <div>
+
+                    <div class="summary-label">
+                        Latest Search
+                    </div>
+
+                    <div
+                        class="summary-value"
+                        id="latestSearch"
+                    >
+                        —
+                    </div>
+
+                    <div class="summary-description">
+                        <span id="latestSearchNote">
+                            Based on real searches
+                        </span>
+                        </span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= SEARCH ================= -->
+
+    <section class="search-card">
+
+        <div class="search-row">
+
+            <div class="search-box">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <input
+                    type="text"
+                    id="historySearch"
+                    placeholder="Search source or destination..."
+                >
+
+            </div>
+
+
+            <div class="filter-box">
+
+                <select id="algorithmFilter">
+
+                    <option value="all">
+                        All Algorithms
+                    </option>
+
+                    <option value="A*">
+                        A*
+                    </option>
+
+                    <option value="BFS">
+                        BFS
+                    </option>
+
+                    <option value="DFS">
+                        DFS
+                    </option>
+
+                    <option value="Best First Search">
+                        Best First Search
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="filter-box">
+
+                <input
+                    type="date"
+                    id="historyDate"
+                >
+
+            </div>
+
+
+            <button
+                class="search-btn"
+                id="historySearchBtn"
+            >
+                <i class="fa-solid fa-magnifying-glass"></i>
+                Search
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= HISTORY TABLE ================= -->
+
+    <section class="history-card">
+
+        <div class="history-header">
+
+            <div>
+
+                <h2>
+                    Search History
+                </h2>
+
+                <p>
+                    Your previously searched routes
+                </p>
+
+            </div>
+
+            <div
+                class="route-count"
+                id="historyCount"
+            >
+                0 routes
+            </div>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>#</th>
+                        <th>Source</th>
+                        <th>Destination</th>
+                        <th>Algorithm</th>
+                        <th>Distance</th>
+                        <th>Date & Time</th>
+                        <th>Actions</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="historyTableBody">
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- EMPTY STATE -->
+
+        <div
+            class="empty-state"
+            id="historyEmpty"
+        >
+
+            <div class="empty-icon">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+            </div>
+
+            <h3>
+                No route history yet
+            </h3>
+
+            <p>
+                Your real searched routes will appear here.
+            </p>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<script src="js/auth.js"></script>
+<script src="js/history.js"></script>
+
+</body>
+</html>

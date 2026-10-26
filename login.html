@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Login - Smart City</title>
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+</head>
+
+<body class="login-page">
+
+
+<div class="login-container">
+
+
+    <!-- =====================================================
+         LEFT SIDE
+         ===================================================== -->
+
+    <div class="login-left">
+
+        <div class="login-overlay"></div>
+
+
+        <!-- LOGO -->
+
+        <div class="login-brand">
+
+            <div class="brand-icon">
+                📍
+            </div>
+
+            <div>
+
+                <h2>
+                    SMART <span>CITY</span>
+                </h2>
+
+                <p>
+                    ROUTE NAVIGATION SYSTEM
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- HERO CONTENT -->
+
+        <div class="login-hero">
+
+            <h1>
+                Navigate Smarter,<br>
+                <span>Travel Better.</span>
+            </h1>
+
+
+            <p class="hero-description">
+
+                AI Powered Navigation System that finds
+                the <strong>Shortest, Fastest & Safest</strong>
+                routes in Smart Cities.
+
+            </p>
+
+
+            <!-- FEATURE 1 -->
+
+            <div class="login-feature">
+
+                <div class="feature-icon">
+                    🧭
+                </div>
+
+                <div>
+
+                    <h3>
+                        Smart Routes
+                    </h3>
+
+                    <p>
+                        AI algorithms to find the
+                        best possible route.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- FEATURE 2 -->
+
+            <div class="login-feature">
+
+                <div class="feature-icon">
+                    🚦
+                </div>
+
+                <div>
+
+                    <h3>
+                        Real-Time Traffic
+                    </h3>
+
+                    <p>
+                        Live traffic updates and
+                        road conditions.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- FEATURE 3 -->
+
+            <div class="login-feature">
+
+                <div class="feature-icon">
+                    🛡️
+                </div>
+
+                <div>
+
+                    <h3>
+                        Safe Journey
+                    </h3>
+
+                    <p>
+                        Find the safest routes with
+                        security alerts.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- FEATURE 4 -->
+
+            <div class="login-feature">
+
+                <div class="feature-icon">
+                    📍
+                </div>
+
+                <div>
+
+                    <h3>
+                        Nearby Services
+                    </h3>
+
+                    <p>
+                        Hospitals, Police, Fuel
+                        Stations & more.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- QUOTE -->
+
+            <div class="login-quote">
+
+                <span>“</span>
+
+                <p>
+                    Better Routes, Better City,<br>
+                    Better Life.
+                </p>
+
+                <span class="quote-end">”</span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         RIGHT SIDE
+         ===================================================== -->
+
+    <div class="login-right">
+
+
+        <div class="login-card">
+
+
+            <!-- LOGIN ICON -->
+
+            <div class="login-icon">
+                📍
+            </div>
+
+
+            <!-- TITLE -->
+
+            <h1>
+                Welcome Back!
+            </h1>
+
+
+            <p class="login-subtitle">
+                Login to continue your journey
+            </p>
+
+
+            <div class="login-line"></div>
+
+
+
+            <!-- =================================================
+                 LOGIN FORM
+                 ================================================= -->
+
+            <form
+                id="loginForm"
+                onsubmit="loginUser(event)">
+
+
+                <div class="form-group">
+
+    <label>Username</label>
+
+    <div class="input-wrapper">
+
+        <span class="input-icon">👤</span>
+
+        <input
+            type="text"
+            id="email"
+            placeholder="Enter your username"
+            autocomplete="username"
+            required>
+
+    </div>
+
+</div>
+
+
+
+                <!-- PASSWORD -->
+
+                <div class="form-group">
+
+                    <label>
+                        Password
+                    </label>
+
+
+                    <div class="password-box">
+
+
+                        <span class="password-icon">
+                            🔒
+                        </span>
+
+
+                        <input
+                            type="password"
+                            id="password"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                            required>
+
+
+                        <button
+                            type="button"
+                            id="passwordToggle"
+                            onclick="togglePassword()"
+                            aria-label="Show or hide password">
+
+                            👁
+
+                        </button>
+
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     LOGIN OPTIONS
+                     ================================================= -->
+
+                <div class="login-options">
+
+
+                    <label class="remember">
+
+                        <input
+                            type="checkbox"
+                            id="rememberMe">
+
+                        <span>
+                            Remember Me
+                        </span>
+
+                    </label>
+
+
+                    <button
+                        type="button"
+                        class="forgot-password"
+                        onclick="forgotPassword()">
+
+                        Forgot Password?
+
+                    </button>
+
+
+                </div>
+
+
+
+                <!-- =================================================
+                     LOGIN BUTTON
+                     ================================================= -->
+
+                <button
+                    type="submit"
+                    class="login-btn">
+
+                    Login
+
+                </button>
+
+
+
+                <!-- =================================================
+                     DIVIDER
+                     ================================================= -->
+
+                <div class="or-divider">
+
+                    <span></span>
+
+                    <p>
+                        OR
+                    </p>
+
+                    <span></span>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     GOOGLE LOGIN
+                     ================================================= -->
+
+                <button
+                    type="button"
+                    class="social-login google-btn"
+                    onclick="socialLogin('Google')">
+
+                    <span>
+                        🔴
+                    </span>
+
+                    Login with Google
+
+                </button>
+
+
+
+                <!-- =================================================
+                     FACEBOOK LOGIN
+                     ================================================= -->
+
+                <button
+                    type="button"
+                    class="social-login facebook-btn"
+                    onclick="socialLogin('Facebook')">
+
+                    <span>
+                        🔵
+                    </span>
+
+                    Login with Facebook
+
+                </button>
+
+
+
+                <!-- =================================================
+                     REGISTER LINK
+                     ================================================= -->
+
+                <p class="register-text">
+
+                    Don't have an account?
+
+                    <a href="register.html">
+                        Register here
+                    </a>
+
+                </p>
+
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     AUTH JAVASCRIPT
+     ========================================================= -->
+
+<script src="js/auth.js"></script>
+
+
+</body>
+
+</html>

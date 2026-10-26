@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Map View - Smart City</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<link rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+
+<style>
+
+/* =========================================================
+   COMMON DASHBOARD SIDEBAR
+========================================================= */
+
+.sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+
+    width: 250px !important;
+    height: 100vh !important;
+
+    background: linear-gradient(
+        180deg,
+        #111936 0%,
+        #16285a 100%
+    ) !important;
+
+    padding: 28px 18px !important;
+
+    box-sizing: border-box !important;
+
+    color: white !important;
+
+    z-index: 9999 !important;
+
+    overflow-y: auto !important;
+}
+
+
+.sidebar .logo {
+    display: flex !important;
+    align-items: center !important;
+
+    gap: 12px !important;
+
+    padding: 5px 8px 28px !important;
+}
+
+
+.sidebar .logo-icon {
+    width: 48px !important;
+    height: 48px !important;
+
+    border-radius: 14px !important;
+
+    background: #1769ff !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    flex-shrink: 0 !important;
+
+    box-shadow:
+        0 5px 18px
+        rgba(23,105,255,0.35) !important;
+}
+
+
+.sidebar .logo-icon i {
+    color: white !important;
+    font-size: 20px !important;
+}
+
+
+.sidebar .logo h4 {
+    margin: 0 !important;
+
+    color: white !important;
+
+    font-size: 18px !important;
+
+    font-weight: 700 !important;
+}
+
+
+.sidebar .logo span {
+    display: block !important;
+
+    margin-top: 3px !important;
+
+    color: #9da8c7 !important;
+
+    font-size: 11px !important;
+}
+
+
+.sidebar .menu-title {
+    color: #8793b7 !important;
+
+    font-size: 11px !important;
+
+    text-transform: uppercase !important;
+
+    letter-spacing: 1.5px !important;
+
+    margin: 12px 10px 10px !important;
+}
+
+
+.sidebar .nav-link {
+    display: flex !important;
+    align-items: center !important;
+
+    gap: 14px !important;
+
+    width: 100% !important;
+
+    height: 48px !important;
+
+    padding: 0 14px !important;
+
+    margin-bottom: 5px !important;
+
+    box-sizing: border-box !important;
+
+    border-radius: 10px !important;
+
+    color: #c9d2ec !important;
+
+    text-decoration: none !important;
+
+    font-size: 14px !important;
+
+    transition: all .25s ease !important;
+}
+
+
+.sidebar .nav-link i {
+    width: 22px !important;
+
+    text-align: center !important;
+
+    font-size: 17px !important;
+
+    color: #d7e0f7 !important;
+}
+
+
+.sidebar .nav-link:hover {
+    background: rgba(47,105,255,.16) !important;
+
+    color: white !important;
+}
+
+
+.sidebar .nav-link.active {
+    background:
+        linear-gradient(
+            90deg,
+            #1769ff,
+            #216cff
+        ) !important;
+
+    color: white !important;
+
+    box-shadow:
+        0 6px 18px
+        rgba(23,105,255,.28) !important;
+}
+
+
+.sidebar .nav-link.active i {
+    color: white !important;
+}
+
+
+.sidebar .admin-box {
+    margin-top: 28px !important;
+
+    padding: 14px !important;
+
+    border-radius: 14px !important;
+
+    background: rgba(255,255,255,.07) !important;
+
+    border:
+        1px solid
+        rgba(255,255,255,.06) !important;
+}
+
+
+.sidebar .admin-info {
+    display: flex !important;
+    align-items: center !important;
+
+    gap: 10px !important;
+
+    margin-bottom: 12px !important;
+}
+
+
+.sidebar .admin-avatar {
+    width: 38px !important;
+    height: 38px !important;
+
+    border-radius: 50% !important;
+
+    background: #8ec5ff !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    flex-shrink: 0 !important;
+}
+
+
+.sidebar .admin-avatar i {
+    color: white !important;
+
+    font-size: 16px !important;
+}
+
+
+.sidebar .admin-name {
+    color: white !important;
+
+    font-size: 14px !important;
+
+    font-weight: 600 !important;
+}
+
+
+.sidebar .admin-role {
+    color: #aab5d0 !important;
+
+    font-size: 11px !important;
+
+    margin-top: 2px !important;
+}
+
+
+.sidebar .logout {
+    width: 100% !important;
+
+    border: none !important;
+
+    border-radius: 9px !important;
+
+    padding: 10px !important;
+
+    background: rgba(255,255,255,.06) !important;
+
+    color: #dce3f5 !important;
+
+    font-size: 13px !important;
+
+    cursor: pointer !important;
+}
+
+
+.sidebar .logout i {
+    margin-right: 7px !important;
+}
+
+
+.sidebar .logout:hover {
+    background: rgba(255,255,255,.12) !important;
+
+    color: white !important;
+}
+
+
+.main-content {
+    margin-left: 250px !important;
+
+    min-height: 100vh !important;
+
+    box-sizing: border-box !important;
+}
+
+
+/* =========================================================
+   MAP PAGE
+========================================================= */
+
+.map-page {
+    background: #f5f7fc;
+
+    min-height: 100vh;
+
+    padding: 30px;
+
+    color: #17213c;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.map-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 18px;
+}
+
+
+.map-header h1 {
+    margin: 0;
+
+    font-size: 30px;
+
+    font-weight: 750;
+}
+
+
+.map-header p {
+    margin: 6px 0 0;
+
+    color: #71809d;
+
+    font-size: 14px;
+}
+
+
+.map-status {
+    background: #eafaf0;
+
+    color: #168548;
+
+    padding: 10px 16px;
+
+    border-radius: 30px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   HOW TO USE
+========================================================= */
+
+.how-card {
+    background:
+        linear-gradient(
+            135deg,
+            #111936,
+            #1d3474
+        );
+
+    color: white;
+
+    border-radius: 18px;
+
+    padding: 20px 22px;
+
+    margin-bottom: 18px;
+
+    box-shadow:
+        0 10px 25px
+        rgba(17,25,54,.13);
+}
+
+
+.how-card h2 {
+    margin: 0 0 15px;
+
+    font-size: 18px;
+}
+
+
+.steps {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 12px;
+}
+
+
+.step {
+    background:
+        rgba(255,255,255,.08);
+
+    border:
+        1px solid
+        rgba(255,255,255,.08);
+
+    border-radius: 13px;
+
+    padding: 13px 15px;
+}
+
+
+.step-number {
+    width: 27px;
+
+    height: 27px;
+
+    border-radius: 50%;
+
+    background: #1769ff;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    margin-bottom: 8px;
+}
+
+
+.step strong {
+    display: block;
+
+    font-size: 12px;
+
+    margin-bottom: 4px;
+}
+
+
+.step span {
+    color: #c2cce3;
+
+    font-size: 11px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   SEARCH CARD
+========================================================= */
+
+.search-card {
+    background: white;
+
+    border-radius: 18px;
+
+    padding: 18px;
+
+    margin-bottom: 18px;
+
+    border: 1px solid #e4e9f2;
+
+    box-shadow:
+        0 8px 25px
+        rgba(30,55,100,.05);
+}
+
+
+.search-label {
+    display: block;
+
+    margin-bottom: 9px;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    color: #263654;
+}
+
+
+.search-row {
+    display: flex;
+
+    gap: 10px;
+}
+
+
+.search-box {
+    flex: 1;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    background: #f7f9fd;
+
+    border: 1px solid #dfe5ef;
+
+    border-radius: 11px;
+
+    padding: 0 14px;
+}
+
+
+.search-box i {
+    color: #8b98af;
+
+    font-size: 14px;
+}
+
+
+.search-box input {
+    width: 100%;
+
+    border: none;
+
+    outline: none;
+
+    background: transparent;
+
+    padding: 13px 0;
+
+    font-size: 13px;
+
+    color: #263654;
+}
+
+
+.search-btn {
+    border: none;
+
+    background:
+        linear-gradient(
+            135deg,
+            #1769ff,
+            #286fff
+        );
+
+    color: white;
+
+    border-radius: 11px;
+
+    padding: 0 22px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 6px 15px
+        rgba(23,105,255,.20);
+}
+
+
+.search-btn:hover {
+    transform: translateY(-1px);
+}
+
+
+.location-btn {
+    border: 1px solid #dce3ef;
+
+    background: white;
+
+    color: #40516f;
+
+    border-radius: 11px;
+
+    padding: 0 18px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+
+.location-btn:hover {
+    background: #f4f7fc;
+
+    color: #1769ff;
+}
+
+
+/* =========================================================
+   MAP
+========================================================= */
+
+.map-card {
+    background: white;
+
+    border-radius: 20px;
+
+    padding: 10px;
+
+    border: 1px solid #e2e8f1;
+
+    box-shadow:
+        0 10px 28px
+        rgba(30,55,100,.07);
+
+    margin-bottom: 18px;
+}
+
+
+#map {
+    width: 100%;
+
+    height: 520px;
+
+    border-radius: 15px;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   LEAFLET CONTROLS
+========================================================= */
+
+.leaflet-control-zoom {
+    border: none !important;
+
+    box-shadow:
+        0 4px 15px
+        rgba(0,0,0,.12) !important;
+}
+
+
+.leaflet-control-zoom a {
+    color: #263654 !important;
+}
+
+
+/* =========================================================
+   LOCATION INFORMATION
+========================================================= */
+
+.location-info {
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr 220px;
+
+    gap: 15px;
+
+    margin-top: 18px;
+}
+
+
+.info-card {
+    background: white;
+
+    border: 1px solid #e3e8f1;
+
+    border-radius: 16px;
+
+    padding: 18px;
+
+    box-shadow:
+        0 6px 20px
+        rgba(30,55,100,.04);
+}
+
+
+.info-top {
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 10px;
+
+    margin-bottom: 10px;
+}
+
+
+.info-icon {
+    width: 38px;
+
+    height: 38px;
+
+    border-radius: 11px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #edf3ff;
+
+    color: #1769ff;
+
+    flex-shrink: 0;
+}
+
+
+.info-title {
+    color: #8994a9;
+
+    font-size: 11px;
+}
+
+
+.info-value {
+    color: #263654;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    line-height: 1.45;
+}
+
+
+.info-sub {
+    color: #7a879d;
+
+    font-size: 11px;
+
+    margin-top: 4px;
+}
+
+
+/* TRAFFIC */
+
+.traffic-info .info-icon {
+    background: #fff3df;
+
+    color: #e58a17;
+}
+
+
+.traffic-value {
+    color: #e58a17;
+
+    font-size: 14px;
+
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:1000px) {
+
+    .location-info {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .traffic-info {
+        grid-column: span 2;
+    }
+
+}
+
+
+@media(max-width:750px) {
+
+    .sidebar {
+        width: 220px !important;
+    }
+
+    .main-content {
+        margin-left: 220px !important;
+    }
+
+    .map-page {
+        padding: 20px;
+    }
+
+    .map-header {
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 10px;
+    }
+
+    .steps {
+        grid-template-columns: 1fr;
+    }
+
+    .search-row {
+        flex-direction: column;
+    }
+
+    .search-btn,
+    .location-btn {
+        min-height: 43px;
+    }
+
+    #map {
+        height: 430px;
+    }
+
+    .location-info {
+        grid-template-columns: 1fr;
+    }
+
+    .traffic-info {
+        grid-column: auto;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+    <!-- =========================================================
+     SIDEBAR
+========================================================= -->
+
+<aside class="sidebar">
+
+    <div class="logo">
+
+        <div class="logo-icon">
+            <i class="fa-solid fa-route"></i>
+        </div>
+
+        <div>
+            <h4>SMART CITY</h4>
+            <span>Route Navigation</span>
+        </div>
+
+    </div>
+
+
+    <div class="menu-title">
+        Main Menu
+    </div>
+
+
+    <a href="dashboard.html" class="nav-link">
+
+        <i class="fa-solid fa-house"></i>
+
+        <span>Dashboard</span>
+
+    </a>
+
+
+    <!-- ACTIVE PAGE -->
+
+    <a href="map.html" class="nav-link active">
+
+        <i class="fa-solid fa-map"></i>
+
+        <span>Map View</span>
+
+    </a>
+
+
+    <a href="route-finder.html" class="nav-link">
+
+        <i class="fa-solid fa-route"></i>
+
+        <span>Route Finder</span>
+
+    </a>
+
+
+    <a href="traffic.html" class="nav-link">
+
+        <i class="fa-solid fa-traffic-light"></i>
+
+        <span>Traffic Status</span>
+
+    </a>
+
+
+    <a href="algorithm.html" class="nav-link">
+
+        <i class="fa-solid fa-brain"></i>
+
+        <span>Route Algorithms</span>
+
+    </a>
+
+
+    <a href="history.html" class="nav-link">
+
+        <i class="fa-solid fa-clock-rotate-left"></i>
+
+        <span>Route History</span>
+
+    </a>
+
+
+    <a href="reports.html" class="nav-link">
+
+        <i class="fa-solid fa-chart-column"></i>
+
+        <span>Reports</span>
+
+    </a>
+
+
+    <div class="menu-title">
+        System
+    </div>
+
+
+    <a href="settings.html" class="nav-link">
+
+        <i class="fa-solid fa-gear"></i>
+
+        <span>Settings</span>
+
+    </a>
+
+
+    <!-- ADMIN BOX -->
+
+    <div class="admin-box">
+
+        <div class="admin-info">
+
+            <div class="admin-avatar">
+
+                <i class="fa-solid fa-user"></i>
+
+            </div>
+
+
+            <div>
+
+                <div class="admin-name">
+                    Admin
+                </div>
+
+                <div class="admin-role">
+                    Administrator
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <button class="logout"
+                onclick="logoutUser()">
+
+            <i class="fa-solid fa-right-from-bracket"></i>
+
+            Logout
+
+        </button>
+
+    </div>
+
+</aside>
+
+
+
+<!-- =========================================================
+     MAIN CONTENT
+========================================================= -->
+
+<main class="main-content map-page">
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <div class="map-header">
+
+        <div>
+
+            <h1>
+                Map View
+            </h1>
+
+            <p>
+                Explore locations and select your destination
+                on the interactive city map.
+            </p>
+
+        </div>
+
+
+        <div class="map-status">
+
+            ● Map System Online
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         HOW TO USE
+    ====================================================== -->
+
+    <div class="how-card">
+
+        <h2>
+            💡 How to use Map View
+        </h2>
+
+
+        <div class="steps">
+
+
+            <!-- STEP 1 -->
+
+            <div class="step">
+
+                <div class="step-number">
+                    1
+                </div>
+
+                <strong>
+                    Find your location
+                </strong>
+
+                <span>
+
+                    Click <b>My Location</b> to identify
+                    your current position.
+
+                </span>
+
+            </div>
+
+
+            <!-- STEP 2 -->
+
+            <div class="step">
+
+                <div class="step-number">
+                    2
+                </div>
+
+                <strong>
+                    Search destination
+                </strong>
+
+                <span>
+
+                    Enter a place, area or landmark
+                    in the search box.
+
+                </span>
+
+            </div>
+
+
+            <!-- STEP 3 -->
+
+            <div class="step">
+
+                <div class="step-number">
+                    3
+                </div>
+
+                <strong>
+                    Find your route
+                </strong>
+
+                <span>
+
+                    After selecting a destination,
+                    continue to Route Finder.
+
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         SEARCH / MY LOCATION
+    ====================================================== -->
+
+    <div class="search-card">
+
+        <label class="search-label">
+
+            🔍 Where do you want to go?
+
+        </label>
+
+
+        <div class="search-row">
+
+
+            <!-- SEARCH INPUT -->
+
+            <div class="search-box">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <input
+                    type="text"
+                    id="locationSearch"
+                    placeholder="Search a place, area or landmark..."
+                    autocomplete="off"
+                >
+
+            </div>
+
+
+            <!-- SEARCH BUTTON -->
+
+            <button
+                class="search-btn"
+                onclick="searchLocation()">
+
+                <i class="fa-solid fa-search"></i>
+
+                Search
+
+            </button>
+
+
+            <!-- MY LOCATION -->
+
+            <button
+                class="location-btn"
+                onclick="getCurrentLocation()">
+
+                <i class="fa-solid fa-location-crosshairs"></i>
+
+                My Location
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         INTERACTIVE MAP
+    ====================================================== -->
+
+    <div class="map-card">
+
+        <div id="map"></div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         START / DESTINATION / TRAFFIC
+    ====================================================== -->
+
+    <div class="location-info">
+
+
+        <!-- START LOCATION -->
+
+        <div class="info-card">
+
+            <div class="info-top">
+
+                <div class="info-icon">
+
+                    <i class="fa-solid fa-location-dot"></i>
+
+                </div>
+
+
+                <div>
+
+                    <div class="info-title">
+                        Starting Point
+                    </div>
+
+                    <div class="info-value"
+                         id="startLocation">
+
+                        Your Current Location
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="info-sub">
+
+                Your selected starting location
+
+            </div>
+
+        </div>
+
+
+
+        <!-- DESTINATION -->
+
+        <div class="info-card">
+
+            <div class="info-top">
+
+                <div class="info-icon">
+
+                    <i class="fa-solid fa-flag-checkered"></i>
+
+                </div>
+
+
+                <div>
+
+                    <div class="info-title">
+                        Destination
+                    </div>
+
+                    <div class="info-value"
+                         id="destinationLocation">
+
+                        Not selected
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="info-sub">
+
+                Search a place to select destination
+
+            </div>
+
+        </div>
+
+
+
+        <!-- TRAFFIC -->
+
+        <div class="info-card traffic-info">
+
+            <div class="info-top">
+
+                <div class="info-icon">
+
+                    <i class="fa-solid fa-traffic-light"></i>
+
+                </div>
+
+
+                <div>
+
+                    <div class="info-title">
+                        Traffic
+                    </div>
+
+                    <div class="traffic-value">
+
+                        Live data unavailable
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="info-sub">
+
+                Real-time traffic service not connected
+
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+<!-- =========================================================
+     LEAFLET MAP
+========================================================= -->
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+
+<!-- =========================================================
+     MAP FUNCTIONALITY
+========================================================= -->
+
+<script src="js/map.js"></script>
+
+
+<!-- =========================================================
+     AUTHENTICATION
+========================================================= -->
+
+<script src="js/auth.js"></script>
+
+
+</body>
+
+</html>

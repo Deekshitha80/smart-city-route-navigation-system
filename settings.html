@@ -1,0 +1,1799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings | Smart City Route Navigation</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #1769ff;
+            --page-bg: #f3f7fd;
+            --card-bg: #ffffff;
+            --text-color: #172554;
+            --muted-color: #667085;
+            --border-color: #e3eaf5;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 24px;
+        }
+
+        body {
+            margin: 0;
+            background: var(--page-bg);
+            color: var(--text-color);
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14px;
+            transition: background .25s, color .25s;
+        }
+
+        /* OUR EXISTING PROJECT SIDEBAR */
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100vh;
+            padding: 22px 14px;
+            color: white;
+            background: linear-gradient(180deg, #111936 0%, #16285a 100%);
+            z-index: 1000;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 3px 7px 28px;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 13px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary-color);
+        }
+
+        .logo-icon i {
+            color: white;
+            font-size: 21px;
+        }
+
+        .logo h4 {
+            color: white;
+            margin: 0;
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .logo span {
+            display: block;
+            color: #aebcdd;
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        .menu-title {
+            color: #8793b7;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.4px;
+            margin: 8px 10px 12px;
+        }
+
+        .sidebar .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            height: 47px;
+            padding: 0 13px;
+            margin-bottom: 5px;
+            border-radius: 10px;
+            color: #c9d2ec;
+            text-decoration: none;
+            font-size: 13px;
+            transition: .2s;
+        }
+
+        .sidebar .nav-link i {
+            width: 21px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .sidebar .nav-link:hover {
+            background: rgba(47,105,255,.16);
+            color: white;
+        }
+
+        .sidebar .nav-link.active {
+            background: linear-gradient(90deg, #1769ff, #216cff);
+            color: white;
+            box-shadow: 0 5px 15px rgba(23,105,255,.25);
+        }
+
+        .admin-box {
+            margin-top: auto;
+            padding-top: 22px;
+        }
+
+        .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 13px;
+            background: rgba(255,255,255,.07);
+            border-radius: 12px 12px 0 0;
+        }
+
+        .admin-avatar {
+            width: 38px;
+            height: 38px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            background: #8ec5ff;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .admin-name {
+            color: white;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .admin-role {
+            color: #aab5d0;
+            font-size: 11px;
+            margin-top: 3px;
+        }
+
+        .logout {
+            width: 100%;
+            border: 0;
+            border-radius: 0 0 12px 12px;
+            padding: 12px 14px;
+            text-align: left;
+            background: rgba(255,255,255,.07);
+            color: #dce3f5;
+            cursor: pointer;
+        }
+
+        .logout i {
+            margin-right: 10px;
+        }
+
+        .logout:hover {
+            background: rgba(255,255,255,.14);
+            color: white;
+        }
+
+        /* MAIN HEADER */
+
+        .main-content {
+            margin-left: 250px;
+            min-height: 100vh;
+            padding: 20px 22px 35px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 20px;
+        }
+
+        .page-title {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .page-title-icon {
+            width: 56px;
+            height: 56px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+            background: #e6f1ff;
+            color: var(--primary-color);
+            font-size: 25px;
+        }
+
+        .page-title h1 {
+            margin: 0;
+            font-size: 27px;
+            font-weight: 750;
+            color: var(--text-color);
+        }
+
+        .page-title p {
+            margin: 4px 0 0;
+            color: var(--muted-color);
+            font-size: 13px;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 17px;
+        }
+
+        .search-box {
+            height: 39px;
+            width: 245px;
+            display: flex;
+            align-items: center;
+            padding: 0 11px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 9px;
+            color: #98a2b3;
+        }
+
+        .search-box input {
+            width: 100%;
+            min-width: 0;
+            border: 0;
+            outline: 0;
+            background: transparent;
+            color: var(--text-color);
+            padding: 0 8px;
+            font-size: 12px;
+        }
+
+        .notification-btn {
+            position: relative;
+            border: 0;
+            background: transparent;
+            color: var(--text-color);
+            font-size: 19px;
+            cursor: pointer;
+        }
+
+        .notification-count {
+            position: absolute;
+            top: -9px;
+            right: -8px;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #ef4444;
+            color: white;
+            font-size: 10px;
+        }
+
+        .top-user {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .top-avatar {
+            width: 37px;
+            height: 37px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary-color);
+            color: white;
+            font-size: 15px;
+        }
+
+        /* SETTINGS LAYOUT */
+
+        .settings-layout {
+            display: grid;
+            grid-template-columns: 235px minmax(0, 1fr);
+            gap: 13px;
+            align-items: start;
+        }
+
+        .settings-menu,
+        .settings-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 13px;
+            box-shadow: 0 3px 12px rgba(25, 55, 100, .035);
+        }
+
+        .settings-menu {
+            padding: 10px;
+            position: sticky;
+            top: 15px;
+        }
+
+        .settings-menu button {
+            width: 100%;
+            min-height: 46px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            margin-bottom: 3px;
+            border: 0;
+            border-radius: 9px;
+            background: transparent;
+            color: var(--muted-color);
+            text-align: left;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .settings-menu button i {
+            width: 18px;
+            text-align: center;
+            font-size: 15px;
+        }
+
+        .settings-menu button:hover,
+        .settings-menu button.active {
+            background: #e7f1ff;
+            color: var(--primary-color);
+        }
+
+        .settings-menu button.active {
+            font-weight: 700;
+        }
+
+        .settings-content {
+            min-width: 0;
+        }
+
+        .settings-card {
+            padding: 18px;
+            margin-bottom: 13px;
+            scroll-margin-top: 15px;
+        }
+
+        .card-heading {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            margin-bottom: 18px;
+        }
+
+        .card-icon {
+            width: 41px;
+            height: 41px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 11px;
+            background: #e8f2ff;
+            color: var(--primary-color);
+            font-size: 17px;
+        }
+
+        .card-heading h3 {
+            margin: 0;
+            color: var(--text-color);
+            font-size: 15px;
+            font-weight: 750;
+        }
+
+        .card-heading p {
+            margin: 4px 0 0;
+            color: var(--muted-color);
+            font-size: 11px;
+        }
+
+        /* PROFILE */
+
+        .profile-layout {
+            display: grid;
+            grid-template-columns: 145px minmax(0, 1fr);
+            gap: 20px;
+            align-items: center;
+        }
+
+        .profile-photo-area {
+            text-align: center;
+        }
+
+        .profile-photo {
+            width: 115px;
+            height: 115px;
+            margin: 0 auto;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #e8f2ff;
+            color: var(--primary-color);
+            border: 3px solid #f1f6ff;
+            font-size: 37px;
+        }
+
+        .profile-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .change-photo-btn {
+            width: 35px;
+            height: 35px;
+            margin: -30px 0 0 76px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid white;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            cursor: pointer;
+        }
+
+        .profile-form {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-width: 0;
+        }
+
+        .form-group label,
+        .preference-item > label {
+            color: var(--text-color);
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .form-control,
+        .form-select {
+            width: 100%;
+            min-width: 0;
+            height: 36px;
+            padding: 0 10px;
+            border: 1px solid #dfe6f0;
+            border-radius: 7px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            font-size: 11px;
+            outline: none;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(23,105,255,.10);
+        }
+
+        .save-row,
+        .card-save {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 13px;
+        }
+
+        .save-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 39px;
+            padding: 9px 14px;
+            border: 0;
+            border-radius: 8px;
+            background: var(--primary-color);
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .save-btn:hover {
+            filter: brightness(.92);
+            transform: translateY(-1px);
+        }
+
+        /* MAP + NAVIGATION CARDS */
+
+        .preference-cards {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 13px;
+            align-items: start;
+        }
+
+        .preference-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px 16px;
+        }
+
+        .map-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 13px 12px;
+        }
+
+        .preference-item {
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .toggle-row {
+            min-height: 29px;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .toggle {
+            width: 39px;
+            height: 21px;
+            position: relative;
+            flex-shrink: 0;
+            display: inline-block;
+        }
+
+        .toggle input {
+            width: 0;
+            height: 0;
+            opacity: 0;
+        }
+
+        .slider {
+            position: absolute;
+            inset: 0;
+            border-radius: 30px;
+            background: #c4ccda;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .slider::before {
+            content: "";
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            top: 3px;
+            left: 3px;
+            border-radius: 50%;
+            background: white;
+            transition: .2s;
+        }
+
+        .toggle input:checked + .slider {
+            background: var(--primary-color);
+        }
+
+        .toggle input:checked + .slider::before {
+            transform: translateX(18px);
+        }
+
+        .toggle-text {
+            color: var(--muted-color);
+            font-size: 10px;
+            line-height: 1.3;
+        }
+
+        .marker-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px;
+        }
+
+        .marker-option {
+            width: 38px;
+            height: 38px;
+            border: 1px solid #e1e7f0;
+            border-radius: 8px;
+            background: var(--card-bg);
+            cursor: pointer;
+        }
+
+        .marker-option i {
+            font-size: 18px;
+        }
+
+        .marker-option.active {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(23,105,255,.13);
+            background: #eef5ff;
+        }
+
+        .blue-marker { color: #1769ff; }
+        .red-marker { color: #ef4444; }
+        .green-marker { color: #16a34a; }
+        .purple-marker { color: #7c3aed; }
+        .orange-marker { color: #f97316; }
+
+        /* Additional sections continue in Part 2 */
+
+        /* THEME & APPEARANCE */
+
+        .theme-options {
+            display: flex;
+            gap: 8px;
+        }
+
+        .theme-option {
+            flex: 1;
+            min-width: 0;
+            min-height: 65px;
+            padding: 8px 5px;
+            border: 1px solid var(--border-color);
+            border-radius: 9px;
+            background: var(--card-bg);
+            color: var(--muted-color);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            font-size: 11px;
+        }
+
+        .theme-option i {
+            font-size: 17px;
+        }
+
+        .theme-option.active {
+            color: var(--primary-color);
+            background: #eaf3ff;
+            border-color: var(--primary-color);
+        }
+
+        .color-options {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            min-height: 36px;
+        }
+
+        .color-option {
+            width: 20px;
+            height: 20px;
+            border: 2px solid white;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 0 1px #d7dfeb;
+        }
+
+        .color-option.active {
+            box-shadow: 0 0 0 2px var(--primary-color);
+        }
+
+        .blue-color { background: #1769ff; }
+        .green-color { background: #16a34a; }
+        .purple-color { background: #7c3aed; }
+        .red-color { background: #ef4444; }
+        .orange-color { background: #f97316; }
+
+        /* ACCOUNT & SECURITY */
+
+        .security-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .security-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 13px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .security-item:last-child {
+            border-bottom: 0;
+        }
+
+        .security-icon {
+            width: 39px;
+            height: 39px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9px;
+            background: #eaf3ff;
+            color: var(--primary-color);
+        }
+
+        .security-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .security-info h4 {
+            margin: 0;
+            color: var(--text-color);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .security-info p {
+            margin: 4px 0 0;
+            color: var(--muted-color);
+            font-size: 10px;
+        }
+
+        .security-btn {
+            border: 1px solid var(--border-color);
+            border-radius: 7px;
+            background: var(--card-bg);
+            color: var(--primary-color);
+            padding: 8px 10px;
+            font-size: 10px;
+            cursor: pointer;
+        }
+
+        .security-btn.danger {
+            color: #dc2626;
+        }
+
+        .verified-badge {
+            padding: 6px 8px;
+            border-radius: 20px;
+            background: #dcfce7;
+            color: #15803d;
+            font-size: 10px;
+            white-space: nowrap;
+        }
+
+        /* DARK THEME */
+
+        body.dark-theme {
+            --page-bg: #0d1425;
+            --card-bg: #182238;
+            --text-color: #edf3ff;
+            --muted-color: #aab8d0;
+            --border-color: #2c3b56;
+        }
+
+        body.dark-theme .page-title-icon,
+        body.dark-theme .card-icon {
+            background: #233958;
+        }
+
+        body.dark-theme .settings-menu button.active,
+        body.dark-theme .theme-option.active,
+        body.dark-theme .marker-option.active {
+            background: #233958;
+        }
+
+        body.dark-theme .form-control,
+        body.dark-theme .form-select {
+            border-color: var(--border-color);
+        }
+
+        body.dark-theme .search-box input {
+            color: var(--text-color);
+        }
+
+        /* SEARCH FEEDBACK */
+
+        .no-search-results {
+            padding: 20px;
+            color: var(--muted-color);
+            text-align: center;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 1200px) {
+            .settings-layout {
+                grid-template-columns: 190px minmax(0, 1fr);
+            }
+
+            .preference-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .map-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 850px) {
+            .sidebar {
+                width: 210px;
+            }
+
+            .main-content {
+                margin-left: 210px;
+                padding: 15px;
+            }
+
+            .settings-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .settings-menu {
+                position: static;
+                display: flex;
+                overflow-x: auto;
+                gap: 5px;
+            }
+
+            .settings-menu button {
+                min-width: 145px;
+            }
+
+            .topbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .topbar-right {
+                width: 100%;
+                flex-wrap: wrap;
+            }
+
+            .search-box {
+                flex: 1;
+                min-width: 160px;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .sidebar {
+                width: 68px;
+                padding: 15px 8px;
+            }
+
+            .logo {
+                justify-content: center;
+                padding: 0 0 22px;
+            }
+
+            .logo-icon {
+                width: 43px;
+                height: 43px;
+            }
+
+            .logo > div:last-child,
+            .menu-title,
+            .sidebar .nav-link span,
+            .admin-info > div:last-child,
+            .logout span {
+                display: none;
+            }
+
+            .sidebar .nav-link {
+                justify-content: center;
+                padding: 0;
+            }
+
+            .sidebar .nav-link i {
+                font-size: 18px;
+            }
+
+            .admin-info {
+                justify-content: center;
+                padding: 8px 0;
+            }
+
+            .admin-avatar {
+                width: 35px;
+                height: 35px;
+            }
+
+            .logout {
+                text-align: center;
+                padding: 12px 0;
+            }
+
+            .logout i {
+                margin: 0;
+            }
+
+            .main-content {
+                margin-left: 68px;
+                padding: 12px;
+            }
+
+            .profile-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-form,
+            .preference-grid,
+            .map-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .theme-options {
+                flex-wrap: wrap;
+            }
+
+            .theme-option {
+                min-width: 75px;
+            }
+
+            .page-title h1 {
+                font-size: 23px;
+            }
+        }
+
+.top-user {
+    position: relative;
+}
+
+.top-user > button {
+    border: 0;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+}
+
+.admin-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    z-index: 10001;
+    width: 190px;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    background: var(--card-bg);
+    box-shadow: 0 8px 24px rgba(0,0,0,.14);
+}
+
+.admin-dropdown button {
+    display: block;
+    width: 100%;
+    padding: 11px;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    color: var(--text-color);
+    text-align: left;
+    cursor: pointer;
+}
+
+.admin-dropdown button:hover {
+    background: var(--page-bg);
+}
+
+.notification-panel {
+    position: fixed;
+    top: 75px;
+    right: 25px;
+    z-index: 10002;
+    width: min(350px, calc(100vw - 30px));
+    padding: 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: var(--card-bg);
+    color: var(--text-color);
+    box-shadow: 0 8px 28px rgba(0,0,0,.15);
+}
+
+.panel-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.panel-heading button {
+    border: 0;
+    background: transparent;
+    color: var(--text-color);
+    font-size: 23px;
+    cursor: pointer;
+}
+
+.notification-item {
+    display: flex;
+    gap: 12px;
+    padding: 12px 0;
+    border-top: 1px solid var(--border-color);
+}
+
+.notification-item > i {
+    color: var(--primary-color);
+}
+
+.notification-item p {
+    margin: 4px 0 0;
+    color: var(--muted-color);
+    font-size: 12px;
+}
+
+.password-overlay:not([hidden]) {
+    position: fixed;
+    inset: 0;
+    z-index: 10003;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    background: rgba(10,20,40,.55);
+}
+
+.password-dialog {
+    width: min(420px, 100%);
+    padding: 22px;
+    border-radius: 14px;
+    background: var(--card-bg);
+    color: var(--text-color);
+    box-shadow: 0 12px 40px rgba(0,0,0,.2);
+}
+
+.password-dialog label {
+    display: block;
+    margin: 12px 0 6px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.password-dialog .save-btn {
+    margin-top: 12px;
+}
+
+#passwordMessage {
+    margin-top: 10px;
+    font-size: 13px;
+}
+
+    </style>
+</head>
+
+<body>
+
+<!-- OUR EXISTING PROJECT SIDEBAR -->
+
+<aside class="sidebar">
+
+    <div class="logo">
+        <div class="logo-icon">
+            <i class="fa-solid fa-city"></i>
+        </div>
+        <div>
+            <h4>SMART CITY</h4>
+            <span>Route Navigation System</span>
+        </div>
+    </div>
+
+    <div class="menu-title">MAIN MENU</div>
+
+    <a href="dashboard.html" class="nav-link">
+        <i class="fa-solid fa-house"></i><span>Dashboard</span>
+    </a>
+
+    <a href="map.html" class="nav-link">
+        <i class="fa-solid fa-map"></i><span>Map View</span>
+    </a>
+
+    <a href="route-finder.html" class="nav-link">
+        <i class="fa-solid fa-route"></i><span>Route Finder</span>
+    </a>
+
+    <a href="traffic.html" class="nav-link">
+        <i class="fa-solid fa-traffic-light"></i><span>Traffic Status</span>
+    </a>
+
+    <a href="algorithm.html" class="nav-link">
+        <i class="fa-solid fa-diagram-project"></i><span>Route Algorithms</span>
+    </a>
+
+    <a href="history.html" class="nav-link">
+        <i class="fa-solid fa-clock-rotate-left"></i><span>Route History</span>
+    </a>
+
+    <a href="reports.html" class="nav-link">
+        <i class="fa-solid fa-chart-column"></i><span>Reports</span>
+    </a>
+
+    <div class="menu-title">SYSTEM</div>
+
+    <a href="settings.html" class="nav-link active">
+        <i class="fa-solid fa-gear"></i><span>Settings</span>
+    </a>
+
+    <div class="admin-box">
+
+        <div class="admin-info">
+            <div class="admin-avatar">
+                <i class="fa-solid fa-user"></i>
+            </div>
+            <div>
+                <div class="admin-name">Admin</div>
+                <div class="admin-role">Administrator</div>
+            </div>
+        </div>
+
+        <button type="button" class="logout" id="settingsLogoutBtn">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Logout</span>
+        </button>
+
+    </div>
+
+</aside>
+
+
+<!-- MAIN CONTENT -->
+
+<main class="main-content">
+
+    <header class="topbar">
+
+        <div class="page-title">
+            <div class="page-title-icon">
+                <i class="fa-solid fa-gear"></i>
+            </div>
+            <div>
+                <h1>Settings</h1>
+                <p>Manage your profile, preferences and application settings</p>
+            </div>
+        </div>
+
+        <div class="topbar-right">
+
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input id="settingsSearch" type="search"
+                       placeholder="Search settings...">
+            </div>
+
+            <button type="button" class="notification-btn"
+                    id="settingsNotificationBtn"
+                    aria-label="Notifications">
+                <i class="fa-regular fa-bell"></i>
+                <span class="notification-count">3</span>
+            </button>
+
+            <div class="top-user" id="adminMenu">
+    <div class="top-avatar">A</div>
+    <span>Admin</span>
+
+    <button type="button" id="adminDropdownBtn"
+            aria-label="Admin menu">
+        <i class="fa-solid fa-chevron-down"></i>
+    </button>
+
+    <div class="admin-dropdown" id="adminDropdown">
+        <button type="button" id="adminProfileBtn">
+            <i class="fa-solid fa-user"></i> Profile Settings
+        </button>
+        <button type="button" id="adminLogoutBtn">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </button>
+    </div>
+</div>
+
+        </div>
+
+    </header>
+
+
+    <div class="settings-layout">
+
+        <!-- SETTINGS NAVIGATION -->
+
+        <nav class="settings-menu" aria-label="Settings sections">
+
+            <button type="button" class="active" data-target="profileSection">
+                <i class="fa-solid fa-user"></i> Profile
+            </button>
+
+            <button type="button" data-target="mapPreferencesSection">
+                <i class="fa-solid fa-map"></i> Map Preferences
+            </button>
+
+            <button type="button" data-target="navigationPreferencesSection">
+                <i class="fa-solid fa-location-dot"></i> Navigation Preferences
+            </button>
+
+            <button type="button" data-target="notificationsSection">
+                <i class="fa-solid fa-bell"></i> Notifications
+            </button>
+
+            <button type="button" data-target="appearanceSection">
+                <i class="fa-solid fa-palette"></i> Theme & Appearance
+            </button>
+
+            <button type="button" data-target="accountSection">
+                <i class="fa-solid fa-lock"></i> Account & Security
+            </button>
+
+        </nav>
+
+
+        <div class="settings-content">
+
+            <!-- PROFILE SETTINGS -->
+
+            <section class="settings-card" id="profileSection">
+
+                <div class="card-heading">
+                    <div class="card-icon"><i class="fa-solid fa-user"></i></div>
+                    <div>
+                        <h3>Profile Settings</h3>
+                        <p>Update your personal information</p>
+                    </div>
+                </div>
+
+                <div class="profile-layout">
+
+                    <div class="profile-photo-area">
+
+                        <div class="profile-photo">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+
+                        <button type="button" class="change-photo-btn"
+                                id="changePhotoBtn"
+                                aria-label="Change profile photo">
+                            <i class="fa-solid fa-camera"></i>
+                        </button>
+
+                        <input type="file" id="profilePhotoInput"
+                               accept="image/*" hidden>
+
+                    </div>
+
+                    <div>
+
+                        <div class="profile-form">
+
+                            <div class="form-group">
+                                <label for="fullName">Full Name</label>
+                                <input class="form-control" id="fullName"
+                                       value="Kalavakuri Deekshitha">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input class="form-control" id="email"
+                                       type="email"
+                                       value="deekshitha@example.com">
+                            </div>
+
+                            <div class="form-group">
+    <label for="age">Age</label>
+    <input
+        class="form-control"
+        id="age"
+        type="number"
+        min="1"
+        max="120"
+        placeholder="Enter your age">
+</div>
+
+<div class="form-group">
+    <label for="gender">Gender</label>
+    <select class="form-select" id="gender">
+        <option value="">Select Gender</option>
+        <option value="Female">Female</option>
+        <option value="Male">Male</option>
+        <option value="Other">Other</option>
+        <option value="Prefer not to say">Prefer not to say</option>
+    </select>
+</div>
+
+<div class="form-group">
+    <label for="phone">Phone Number</label>
+    <input
+        class="form-control"
+        id="phone"
+        type="tel"
+        placeholder="Enter phone number">
+</div>
+
+                        </div>
+
+                        <div class="save-row">
+                            <button type="button" class="save-btn"
+                                    id="saveProfileBtn">
+                                <i class="fa-regular fa-floppy-disk"></i>
+                                Save Profile
+                            </button>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- MAP AND NAVIGATION -->
+
+            <div class="preference-cards">
+
+                <section class="settings-card" id="mapPreferencesSection">
+
+                    <div class="card-heading">
+                        <div class="card-icon"><i class="fa-solid fa-map"></i></div>
+                        <div>
+                            <h3>Map Preferences</h3>
+                            <p>Customize your map display and behaviour</p>
+                        </div>
+                    </div>
+
+                    <div class="preference-grid map-grid">
+
+                        <div class="preference-item">
+                            <label for="mapStyle">Default Map View</label>
+                            <select class="form-select" id="mapStyle">
+                                <option selected>Road Map</option>
+                                <option>Satellite</option>
+                                <option>Terrain</option>
+                            </select>
+                        </div>
+
+                        <div class="preference-item">
+                            <label for="mapProvider">Map Provider</label>
+                            <select class="form-select" id="mapProvider">
+                                <option selected>OpenStreetMap</option>
+                            </select>
+                        </div>
+
+                        <div class="preference-item">
+                            <label for="mapZoom">Default Zoom Level</label>
+                            <select class="form-select" id="mapZoom">
+                                <option>8</option>
+                                <option>10</option>
+                                <option>12</option>
+                                <option selected>13</option>
+                                <option>15</option>
+                                <option>17</option>
+                            </select>
+                        </div>
+
+                        <div class="preference-item">
+                            <label>Show Traffic Layer</label>
+                            <div class="toggle-row">
+                                <label class="toggle">
+                                    <input type="checkbox" id="showTrafficLayer" checked>
+                                    <span class="slider"></span>
+                                </label>
+                                <span class="toggle-text">Enable real-time traffic</span>
+                            </div>
+                        </div>
+
+                        <div class="preference-item">
+                            <label for="mapDistanceUnit">Units</label>
+                            <select class="form-select" id="mapDistanceUnit">
+                                <option selected>Kilometers (km)</option>
+                                <option>Miles (mi)</option>
+                            </select>
+                        </div>
+
+                        <div class="preference-item">
+                            <label>Show Location Marker</label>
+                            <div class="toggle-row">
+                                <label class="toggle">
+                                    <input type="checkbox" id="showLocationMarker" checked>
+                                    <span class="slider"></span>
+                                </label>
+                                <span class="toggle-text">Display markers</span>
+                            </div>
+                        </div>
+
+                        <div class="preference-item">
+                            <label>Marker Style</label>
+                            <div class="marker-options">
+                                <button type="button" class="marker-option blue-marker active"
+                                        data-marker="blue" aria-label="Blue marker">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                </button>
+                                <button type="button" class="marker-option red-marker"
+                                        data-marker="red" aria-label="Red marker">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                </button>
+                                <button type="button" class="marker-option green-marker"
+                                        data-marker="green" aria-label="Green marker">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                </button>
+                                <button type="button" class="marker-option purple-marker"
+                                        data-marker="purple" aria-label="Purple marker">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                </button>
+                                <button type="button" class="marker-option orange-marker"
+                                        data-marker="orange" aria-label="Orange marker">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="card-save">
+                        <button type="button" class="save-btn" id="saveMapBtn">
+                            <i class="fa-regular fa-floppy-disk"></i>
+                            Save Map Settings
+                        </button>
+                    </div>
+
+                </section>
+
+
+                <section class="settings-card" id="navigationPreferencesSection">
+
+                    <div class="card-heading">
+                        <div class="card-icon"><i class="fa-solid fa-location-arrow"></i></div>
+                        <div>
+                            <h3>Navigation Preferences</h3>
+                            <p>Set your route and navigation options</p>
+                        </div>
+                    </div>
+
+                    <div class="preference-grid">
+
+                        <div class="preference-item">
+                            <label for="defaultAlgorithm">Default Algorithm</label>
+                            <select class="form-select" id="defaultAlgorithm">
+                                <option selected>A* (Recommended)</option>
+                                <option>BFS</option>
+                                <option>DFS</option>
+                                <option>Best First Search</option>
+                            </select>
+                        </div>
+
+                        <div class="preference-item">
+                            <label for="routePreference">Route Preference</label>
+                            <select class="form-select" id="routePreference">
+                                <option selected>Fastest Route</option>
+                                <option>Shortest Route</option>
+                            </select>
+                        </div>
+
+                        <div class="preference-item">
+                            <label>Voice Navigation</label>
+                            <div class="toggle-row">
+                                <label class="toggle">
+                                    <input type="checkbox"
+                                    id="settingsVoiceNavigation" checked>
+                                    <span class="slider"></span>
+                                </label>
+                                <span class="toggle-text">Enable voice guidance</span>
+                            </div>
+                        </div>
+
+                        <div class="preference-item">
+                            <label>Show Turn Instructions</label>
+                            <div class="toggle-row">
+                                <label class="toggle">
+                                    <input type="checkbox" id="turnInstructions" checked>
+                                    <span class="slider"></span>
+                                </label>
+                                <span class="toggle-text">Step-by-step directions</span>
+                            </div>
+                        </div>
+
+                        <div class="preference-item">
+                            <label>Auto Reroute</label>
+                            <div class="toggle-row">
+                                <label class="toggle">
+                                    <input type="checkbox" id="autoReroute" checked>
+                                    <span class="slider"></span>
+                                </label>
+                                <span class="toggle-text">Find a new route automatically</span>
+                            </div>
+                        </div>
+
+                        <div class="preference-item">
+                            <label>Avoid Tolls</label>
+                            <div class="toggle-row">
+                                <label class="toggle">
+                                    <input type="checkbox" id="avoidTolls">
+                                    <span class="slider"></span>
+                                </label>
+                                <span class="toggle-text">Try to avoid toll roads</span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="card-save">
+                        <button type="button" class="save-btn" id="saveNavigationBtn">
+                            <i class="fa-regular fa-floppy-disk"></i>
+                            Save Navigation Settings
+                        </button>
+                    </div>
+
+                </section>
+
+            </div>
+
+
+            <!-- NOTIFICATIONS AND APPEARANCE -->
+
+            <div class="preference-cards">
+
+                <section class="settings-card" id="notificationsSection">
+
+                    <div class="card-heading">
+                        <div class="card-icon"><i class="fa-solid fa-bell"></i></div>
+                        <div>
+                            <h3>Notifications</h3>
+                            <p>Manage your notification preferences</p>
+                        </div>
+                    </div>
+
+                    <div class="preference-grid">
+                    <div class="preference-item">
+                            <label>Route Updates</label>
+                            <div class="toggle-row">
+                                <label class="toggle">
+                                    <input type="checkbox" id="routeUpdates" checked>
+                                    <span class="slider"></span>
+                                </label>
+                                <span class="toggle-text">Route changes</span>
+                            </div>
+                        </div>
+
+                        <div class="preference-item">
+                            <label>System Announcements</label>
+                            <div class="toggle-row">
+                                <label class="toggle">
+                                    <input type="checkbox" id="systemAlerts" checked>
+                                    <span class="slider"></span>
+                                </label>
+                                <span class="toggle-text">Important system updates</span>
+                            </div>
+                        </div>
+
+                        <div class="preference-item">
+                            <label>Traffic Alerts</label>
+                            <div class="toggle-row">
+                                <label class="toggle">
+                                    <input type="checkbox" id="trafficAlerts" checked>
+                                    <span class="slider"></span>
+                                </label>
+                                <span class="toggle-text">Traffic notifications</span>
+                            </div>
+                        </div>
+
+                        <div class="preference-item">
+                            <label>Email Notifications</label>
+                            <div class="toggle-row">
+                            <label class="toggle">
+                                    <input type="checkbox" id="emailNotifications">
+                                    <span class="slider"></span>
+                                </label>
+                                <span class="toggle-text">Updates via email</span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="card-save">
+                        <button type="button" class="save-btn" id="saveNotificationBtn">
+                            <i class="fa-regular fa-floppy-disk"></i>
+                            Save Notification Settings
+                        </button>
+                    </div>
+
+                </section>
+
+
+                <section class="settings-card" id="appearanceSection">
+
+                    <div class="card-heading">
+                        <div class="card-icon"><i class="fa-solid fa-palette"></i></div>
+                        <div>
+                            <h3>Theme & Appearance</h3>
+                            <p>Customize the look and feel of the application</p>
+                        </div>
+                    </div>
+
+                    <div class="preference-grid">
+
+                        <div class="preference-item">
+                            <label>Theme Mode</label>
+                            <div class="theme-options">
+
+                                <button type="button" class="theme-option active"
+                                        data-theme="light">
+                                    <i class="fa-solid fa-sun"></i>Light
+                                </button>
+
+                                <button type="button" class="theme-option"
+                                        data-theme="dark">
+                                    <i class="fa-solid fa-moon"></i>Dark
+                                </button>
+
+                                <button type="button" class="theme-option"
+                                        data-theme="system">
+                                    <i class="fa-solid fa-desktop"></i>System
+                                </button>
+
+                            </div>
+                        </div>
+                        <div class="preference-item">
+                            <label>Primary Color</label>
+                            <div class="color-options">
+
+                                <button type="button" class="color-option blue-color active"
+                                        data-color="#1769ff" aria-label="Blue"></button>
+
+                                <button type="button" class="color-option green-color"
+                                        data-color="#16a34a" aria-label="Green"></button>
+
+                                <button type="button" class="color-option purple-color"
+                                        data-color="#7c3aed" aria-label="Purple"></button>
+
+                                <button type="button" class="color-option red-color"
+                                        data-color="#ef4444" aria-label="Red"></button>
+
+                                <button type="button" class="color-option orange-color"
+                                        data-color="#f97316" aria-label="Orange"></button>
+
+                            </div>
+                        </div>
+
+                        <div class="preference-item">
+                            <label for="fontSize">Font Size</label>
+                            <select class="form-select" id="fontSize">
+                                <option value="small">Small</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="large">Large</option>
+                            </select>
+                        </div>
+
+                    </div>
+                    <div class="card-save">
+                        <button type="button" class="save-btn" id="saveAppearanceBtn">
+                            <i class="fa-regular fa-floppy-disk"></i>
+                            Save Appearance Settings
+                        </button>
+                    </div>
+
+                </section>
+
+            </div>
+
+
+            <!-- ACCOUNT & SECURITY -->
+                <section class="settings-card" id="accountSecuritySection">
+    <div class="card-heading">
+        <div class="card-icon">
+            <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <div>
+            <h3>Account &amp; Security</h3>
+            <p>Manage your account security and session.</p>
+        </div>
+    </div>
+
+    <div class="security-option">
+        <div>
+            <h5><i class="fa-solid fa-envelope"></i> Email Verification</h5>
+            <p>Check the email associated with your account.</p>
+        </div>
+        <span class="security-status">Account Settings</span>
+    </div>
+
+    <div class="security-option">
+        <div>
+            <h5><i class="fa-solid fa-right-from-bracket"></i> Logout</h5>
+            <p>Sign out of your current session.</p>
+        </div>
+        <button type="button" id="accountLogoutBtn" class="save-btn">
+            Logout
+        </button>
+    </div>
+</section>
+
+                        
+
+        </div>
+    </div>
+
+<!-- Notification panel -->
+<div class="notification-panel" id="notificationPanel" hidden>
+    <div class="panel-heading">
+        <strong>Notifications</strong>
+        <button type="button" id="closeNotificationBtn"
+                aria-label="Close notifications">&times;</button>
+    </div>
+
+    <div class="notification-item">
+        <i class="fa-solid fa-route"></i>
+        <div>
+            <strong>Route Updates</strong>
+            <p>Route updates will appear here.</p>
+        </div>
+    </div>
+
+    <div class="notification-item">
+        <i class="fa-solid fa-traffic-light"></i>
+        <div>
+            <strong>Traffic Alerts</strong>
+            <p>Traffic alerts will appear here.</p>
+        </div>
+    </div>
+
+    <div class="notification-item">
+        <i class="fa-solid fa-circle-info"></i>
+        <div>
+            <strong>System Announcements</strong>
+            <p>System announcements will appear here.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Change password dialog -->
+<div class="password-overlay" id="passwordOverlay" hidden>
+    <div class="password-dialog" role="dialog"
+         aria-modal="true" aria-labelledby="passwordDialogTitle">
+
+        <div class="panel-heading">
+            <strong id="passwordDialogTitle">Change Password</strong>
+            <button type="button" id="closePasswordBtn"
+                    aria-label="Close">&times;</button>
+        </div>
+
+        <form id="changePasswordForm">
+            <label for="currentPassword">Current Password</label>
+            <input class="form-control" id="currentPassword"
+                   type="password" autocomplete="current-password"
+                   required>
+
+            <label for="newPassword">New Password</label>
+            <input class="form-control" id="newPassword"
+                   type="password" minlength="8"
+                   autocomplete="new-password" required>
+
+            <label for="confirmPassword">Confirm New Password</label>
+            <input class="form-control" id="confirmPassword"
+                   type="password" minlength="8"
+                   autocomplete="new-password" required>
+
+            <p id="passwordMessage" role="status"></p>
+
+            <button type="submit" class="save-btn">
+                Update Password
+            </button>
+        </form>
+    </div>
+</div>
+
+</main>
+
+<script src="/js/settings.js"></script>
+
+</body>
+</html>
+

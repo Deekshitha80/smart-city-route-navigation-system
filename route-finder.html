@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Route Finder - Smart City</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f7fb;
+            color: #172b4d;
+        }
+
+        /* ================= SIDEBAR ================= */
+        .sidebar {
+            position: fixed;
+            inset: 0 auto 0 0;
+            width: 250px;
+            height: 100vh;
+            padding: 26px 18px;
+            background: linear-gradient(180deg,#111936 0%,#16285a 100%);
+            color: #fff;
+            z-index: 9999;
+            overflow-y: auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 4px 8px 27px;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            flex: 0 0 48px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #1769ff;
+            box-shadow: 0 6px 20px rgba(23,105,255,.35);
+        }
+
+        .logo-icon i { font-size: 20px; color: #fff; }
+
+        .logo h4 {
+            margin: 0;
+            font-size: 18px;
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .logo span {
+            display: block;
+            margin-top: 3px;
+            color: #9da8c7;
+            font-size: 11px;
+        }
+
+        .menu-title {
+            margin: 12px 10px 10px;
+            color: #8793b7;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            width: 100%;
+            height: 47px;
+            padding: 0 14px;
+            margin-bottom: 5px;
+            border-radius: 10px;
+            color: #c9d2ec;
+            text-decoration: none;
+            font-size: 14px;
+            transition: .2s ease;
+        }
+
+        .nav-link i {
+            width: 22px;
+            text-align: center;
+            font-size: 17px;
+        }
+
+        .nav-link:hover {
+            color: #fff;
+            background: rgba(47,105,255,.16);
+        }
+
+        .nav-link.active {
+            color: #fff;
+            background: linear-gradient(90deg,#1769ff,#216cff);
+            box-shadow: 0 7px 20px rgba(23,105,255,.28);
+        }
+
+        .admin-box {
+            margin-top: 28px;
+            padding: 14px;
+            border-radius: 14px;
+            background: rgba(255,255,255,.07);
+            border: 1px solid rgba(255,255,255,.07);
+        }
+
+        .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .admin-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #8ec5ff;
+        }
+
+        .admin-name {
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .admin-role {
+            margin-top: 2px;
+            color: #aab5d0;
+            font-size: 11px;
+        }
+
+        .logout {
+            width: 100%;
+            padding: 10px;
+            border: 0;
+            border-radius: 9px;
+            background: rgba(255,255,255,.06);
+            color: #dce3f5;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .logout:hover {
+            background: rgba(255,255,255,.12);
+            color: #fff;
+        }
+
+        /* ================= MAIN ================= */
+        .main-content {
+            margin-left: 250px;
+            min-height: 100vh;
+        }
+
+        .page {
+            max-width: 1500px;
+            margin: auto;
+            padding: 30px 32px 55px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 22px;
+        }
+
+        .page-header h1 {
+            margin: 0;
+            font-size: 30px;
+            color: #14213d;
+        }
+
+        .page-header p {
+            margin: 7px 0 0;
+            color: #667085;
+            font-size: 14px;
+        }
+
+        .online-badge {
+            padding: 9px 15px;
+            border-radius: 9px;
+            background: #effdf3;
+            border: 1px solid #b9e6c7;
+            color: #16803d;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .online-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            margin-right: 7px;
+            border-radius: 50%;
+            background: #16a34a;
+        }
+
+        /* ================= SEARCH ================= */
+        .search-layout {
+            display: grid;
+            grid-template-columns: minmax(0,1fr) 350px;
+            gap: 18px;
+            margin-bottom: 18px;
+        }
+
+        .card {
+            background: #fff;
+            border: 1px solid #e5e9f0;
+            border-radius: 14px;
+            box-shadow: 0 5px 20px rgba(20,33,61,.045);
+        }
+
+        .search-card { padding: 24px; }
+
+        .card-title {
+            margin: 0;
+            font-size: 21px;
+            color: #172b4d;
+        }
+
+        .card-subtitle {
+            margin: 5px 0 20px;
+            color: #667085;
+            font-size: 13px;
+        }
+
+        .locations {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #344054;
+        }
+
+        .input-wrap {
+            position: relative;
+        }
+
+        .input-wrap i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #3155ff;
+        }
+
+        .route-input {
+            width: 100%;
+            height: 46px;
+            padding: 0 14px 0 40px;
+            border: 1px solid #d7dce5;
+            border-radius: 8px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .route-input:focus,
+        .algorithm-select:focus {
+            border-color: #3155ff;
+            box-shadow: 0 0 0 3px rgba(49,85,255,.10);
+        }
+
+        .algorithm-row {
+            margin-top: 18px;
+            max-width: 430px;
+        }
+
+        .algorithm-select {
+            width: 100%;
+            height: 44px;
+            padding: 0 12px;
+            border: 1px solid #d7dce5;
+            border-radius: 8px;
+            background: #fff;
+            outline: none;
+        }
+
+        .options {
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+            margin: 17px 0;
+        }
+
+        .check {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            margin: 0;
+            font-weight: 500;
+            color: #475467;
+        }
+
+        .check input { accent-color: #3155ff; }
+
+        .find-btn {
+            width: 100%;
+            height: 47px;
+            border: 0;
+            border-radius: 8px;
+            color: #fff;
+            background: linear-gradient(90deg,#1769ff,#5b45df);
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .find-btn:hover { filter: brightness(1.04); }
+        .find-btn:disabled { opacity: .55; cursor: wait; }
+
+        .status {
+            min-height: 18px;
+            margin-top: 11px;
+            font-size: 13px;
+        }
+
+        .status.loading { color: #3155ff; }
+        .status.success { color: #159447; }
+        .status.error { color: #dc2626; }
+
+        /* ================= INFO ================= */
+        .info-card { padding: 24px; }
+
+        .info-icon {
+            width: 54px;
+            height: 54px;
+            margin: 32px auto 14px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1769ff;
+            background: #eef4ff;
+            font-size: 23px;
+        }
+
+        .info-empty {
+            text-align: center;
+            color: #98a2b3;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .info-details {
+            display: none;
+            margin-top: 22px;
+            padding: 15px;
+            border-radius: 10px;
+            background: #f8fafc;
+            color: #475467;
+            font-size: 12px;
+            line-height: 1.65;
+        }
+
+        .info-details strong { color: #172b4d; }
+
+        /* ================= MAP ================= */
+        .map-card {
+            overflow: hidden;
+            margin-bottom: 18px;
+        }
+
+        .section-head {
+            padding: 21px 23px 10px;
+        }
+
+        .section-head h2 {
+            margin: 0;
+            font-size: 21px;
+            color: #172b4d;
+        }
+
+        .section-head p {
+            margin: 5px 0 0;
+            color: #667085;
+            font-size: 13px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            padding: 0 23px;
+            border-bottom: 1px solid #e7eaf0;
+        }
+
+        .tab {
+            padding: 11px 14px;
+            border: 0;
+            border-bottom: 2px solid transparent;
+            background: transparent;
+            color: #667085;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .tab.active {
+            color: #2455d6;
+            border-bottom-color: #3155ff;
+        }
+
+        #routeMap {
+            width: 100%;
+            height: 410px;
+            background: #e8eef5;
+        }
+
+        .preview {
+            min-height: 410px;
+            padding: 45px 30px;
+            background: linear-gradient(180deg,#f8fbff,#fff);
+        }
+
+        .preview-box {
+            max-width: 850px;
+            margin: 35px auto 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .preview-point {
+            flex: 1;
+            min-height: 105px;
+            padding: 17px;
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            border: 1px solid #dfe6f0;
+            border-radius: 13px;
+            background: #fff;
+            box-shadow: 0 5px 18px rgba(20,33,61,.05);
+        }
+
+        .preview-point .icon {
+            font-size: 25px;
+        }
+
+        .preview-point small {
+            display: block;
+            margin-bottom: 5px;
+            color: #7b8799;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .preview-point strong {
+            color: #172b4d;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .preview-line {
+            width: 75px;
+            height: 4px;
+            border-radius: 5px;
+            background: linear-gradient(90deg,#2563eb,#6366f1);
+        }
+
+        .preview-note {
+            text-align: center;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        /* ================= SUMMARY ================= */
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(4,1fr);
+            gap: 12px;
+            padding: 16px 20px 20px;
+        }
+
+        .summary-item {
+            padding: 15px;
+            border: 1px solid #e6eaf0;
+            border-radius: 10px;
+            background: #fff;
+        }
+
+        .summary-label {
+            color: #667085;
+            font-size: 12px;
+            margin-bottom: 7px;
+        }
+
+        .summary-label i {
+            margin-right: 6px;
+            color: #3155ff;
+        }
+
+        .summary-value {
+            color: #172b4d;
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        /* ================= INSTRUCTIONS ================= */
+        .instructions-card {
+            padding: 23px;
+        }
+
+        .voice-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin: 18px 0;
+            padding: 13px 15px;
+            border: 1px solid #e3e9f5;
+            border-radius: 11px;
+            background: #f7f9ff;
+        }
+
+        .voice-btn {
+            border: 0;
+            border-radius: 9px;
+            padding: 11px 17px;
+            color: #fff;
+            background: linear-gradient(90deg,#1769ff,#4f46e5);
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .voice-btn.stop { background: #dc2626; }
+        .voice-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+        .voice-status {
+            color: #667085;
+            font-size: 12px;
+        }
+
+        .instruction-list {
+            margin-top: 12px;
+        }
+
+        .empty {
+            padding: 40px 15px;
+            text-align: center;
+            color: #98a2b3;
+        }
+
+        .empty i {
+            margin-bottom: 13px;
+            color: #3155ff;
+            font-size: 40px;
+        }
+
+        .empty h3 {
+            margin: 0 0 7px;
+            color: #475467;
+        }
+
+        .empty p { margin: 0; }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 16px 4px;
+            border-bottom: 1px solid #edf0f5;
+        }
+
+        .step-number {
+            width: 34px;
+            height: 34px;
+            flex: 0 0 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #eaf1ff;
+            color: #2455d6;
+            font-weight: 800;
+            font-size: 13px;
+        }
+
+        .step-main {
+            flex: 1;
+            color: #344054;
+            font-size: 14px;
+            line-height: 1.55;
+        }
+
+        .step-distance {
+            margin-top: 4px;
+            color: #667085;
+            font-size: 12px;
+        }
+
+        /* ================= RESPONSIVE ================= */
+        @media(max-width:1050px) {
+            .search-layout { grid-template-columns: 1fr; }
+            .summary { grid-template-columns: 1fr 1fr; }
+        }
+
+        @media(max-width:760px) {
+            .sidebar { width: 215px; }
+            .main-content { margin-left: 215px; }
+            .page { padding: 20px 14px 40px; }
+            .locations { grid-template-columns: 1fr; gap: 14px; }
+            .page-header { flex-direction: column; gap: 14px; }
+            .summary { grid-template-columns: 1fr; }
+            .preview-box { flex-direction: column; }
+            .preview-line { width: 4px; height: 35px; }
+            .voice-row { align-items: flex-start; flex-direction: column; }
+        }
+    </style>
+</head>
+
+<body>
+
+<aside class="sidebar">
+
+    <div class="logo">
+        <div class="logo-icon">
+            <i class="fa-solid fa-route"></i>
+        </div>
+        <div>
+            <h4>SMART CITY</h4>
+            <span>Route Navigation</span>
+        </div>
+    </div>
+
+    <div class="menu-title">MAIN MENU</div>
+
+    <a class="nav-link" href="dashboard.html">
+        <i class="fa-solid fa-house"></i><span>Dashboard</span>
+    </a>
+
+    <a class="nav-link" href="map.html">
+        <i class="fa-solid fa-map"></i><span>Map View</span>
+    </a>
+
+    <a class="nav-link active" href="route-finder.html">
+        <i class="fa-solid fa-route"></i><span>Route Finder</span>
+    </a>
+
+    <a class="nav-link" href="traffic.html">
+        <i class="fa-solid fa-traffic-light"></i><span>Traffic Status</span>
+    </a>
+
+    <a class="nav-link" href="algorithm.html">
+        <i class="fa-solid fa-brain"></i><span>Route Algorithms</span>
+    </a>
+
+    <a class="nav-link" href="history.html">
+        <i class="fa-solid fa-clock-rotate-left"></i><span>Route History</span>
+    </a>
+
+    <a class="nav-link" href="reports.html">
+        <i class="fa-solid fa-chart-column"></i><span>Reports</span>
+    </a>
+
+    <div class="menu-title">SYSTEM</div>
+
+    <a class="nav-link" href="settings.html">
+        <i class="fa-solid fa-gear"></i><span>Settings</span>
+    </a>
+
+    <div class="admin-box">
+        <div class="admin-info">
+            <div class="admin-avatar">
+                <i class="fa-solid fa-user"></i>
+            </div>
+            <div>
+                <div class="admin-name">Admin</div>
+                <div class="admin-role">Administrator</div>
+            </div>
+        </div>
+
+        <button class="logout" type="button" onclick="logoutUser()">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            Logout
+        </button>
+    </div>
+</aside>
+
+<main class="main-content">
+
+    <div class="page">
+
+        <div class="page-header">
+            <div>
+                <h1>Route Finder</h1>
+                <p>Find the shortest, fastest and safest route using intelligent search algorithms.</p>
+            </div>
+
+            <div class="online-badge">
+                <span class="online-dot"></span>
+                Map Online
+            </div>
+        </div>
+
+        <section class="search-layout">
+
+            <div class="card search-card">
+                <h2 class="card-title">Find Best Route</h2>
+                <p class="card-subtitle">Enter your locations and select an algorithm to calculate a route.</p>
+
+                <div class="locations">
+
+                    <div>
+                        <label for="startLocation">From</label>
+                        <div class="input-wrap">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <input id="startLocation"
+                                   class="route-input"
+                                   type="text"
+                                   placeholder="Enter starting location"
+                                   autocomplete="off">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="destinationLocation">To</label>
+                        <div class="input-wrap">
+                            <i class="fa-solid fa-flag-checkered"></i>
+                            <input id="destinationLocation"
+                                   class="route-input"
+                                   type="text"
+                                   placeholder="Enter destination"
+                                   autocomplete="off">
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="algorithm-row">
+                    <label for="algorithm">Select Algorithm</label>
+
+                    <select id="algorithm" class="algorithm-select">
+                        <option value="astar">A* Search</option>
+                        <option value="best-first">Best First Search</option>
+                        <option value="bfs">Breadth First Search</option>
+                        <option value="dfs">Depth First Search</option>
+                    </select>
+                </div>
+
+                <div class="options">
+                    <label class="check">
+                        <input id="avoidTolls" type="checkbox">
+                        Avoid Tolls
+                    </label>
+
+                    <label class="check">
+                        <input id="avoidTraffic" type="checkbox">
+                        Avoid Heavy Traffic
+                    </label>
+
+                    <label class="check">
+                        <input id="avoidBlocks" type="checkbox">
+                        Avoid Road Blocks
+                    </label>
+
+                </div>
+
+                <button id="findRouteBtn" class="find-btn" type="button">
+                    <i class="fa-solid fa-route"></i>
+                    FIND BEST ROUTE
+                </button>
+
+                <div id="routeStatus" class="status"></div>
+            </div>
+
+            <div class="card info-card">
+
+                <h2 class="card-title" id="infoTitle">Find Best Route</h2>
+                <p class="card-subtitle" id="infoSubtitle">
+                    Route information will appear here after calculation.
+                </p>
+
+                <div id="infoEmpty" class="info-empty">
+                    <div class="info-icon">
+                        <i class="fa-solid fa-map-location-dot"></i>
+                    </div>
+                    Enter From and To locations and find a route.
+                </div>
+
+                <div id="infoDetails" class="info-details"></div>
+
+            </div>
+
+        </section>
+
+        <section class="card map-card">
+
+            <div class="section-head">
+                <h2>Route Map</h2>
+                <p>Visual route preview</p>
+            </div>
+
+            <div class="tabs">
+                <button id="liveMapTab" class="tab active" type="button">
+                    <i class="fa-solid fa-map"></i> Live Map
+                </button>
+
+                <button id="routePreviewTab" class="tab" type="button">
+                    <i class="fa-solid fa-route"></i> Route Preview
+                </button>
+            </div>
+
+            <div id="liveMapPanel">
+                <div id="routeMap"></div>
+            </div>
+
+            <div id="routePreviewPanel" class="preview" style="display:none;">
+
+                <div class="preview-box">
+
+                    <div class="preview-point">
+                        <span class="icon">📍</span>
+                        <div>
+                            <small>START</small>
+                            <strong id="previewStart">—</strong>
+                        </div>
+                    </div>
+
+                    <div class="preview-line"></div>
+
+                    <div class="preview-point">
+                        <span class="icon">🏁</span>
+                        <div>
+                            <small>DESTINATION</small>
+                            <strong id="previewDestination">—</strong>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div id="previewNote" class="preview-note">
+                    Find a route to see the route preview.
+                </div>
+
+            </div>
+
+            <div class="summary">
+
+                <div class="summary-item">
+                    <div class="summary-label">
+                        <i class="fa-solid fa-road"></i> Distance
+                    </div>
+                    <div id="routeDistance" class="summary-value">—</div>
+                </div>
+
+                <div class="summary-item">
+                    <div class="summary-label">
+                        <i class="fa-solid fa-clock"></i> Estimated Time
+                    </div>
+                    <div id="routeTime" class="summary-value">—</div>
+                </div>
+
+                <div class="summary-item">
+                    <div class="summary-label">
+                        <i class="fa-solid fa-brain"></i> Algorithm
+                    </div>
+                    <div id="selectedAlgorithm" class="summary-value">A* Search</div>
+                </div>
+
+                <div class="summary-item">
+                    <div class="summary-label">
+                        <i class="fa-solid fa-traffic-light"></i> Traffic
+                    </div>
+                    <div id="trafficInfo" class="summary-value">Not available</div>
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="card instructions-card">
+
+            <div class="section-head" style="padding-left:0;padding-right:0;">
+                <h2>Route Instructions</h2>
+                <p>Turn-by-turn directions for the selected route.</p>
+            </div>
+
+            <div class="voice-row">
+
+                <button id="voiceNavigationBtn"
+                        class="voice-btn"
+                        type="button"
+                        disabled>
+                    <i class="fa-solid fa-volume-high"></i>
+                    Start Voice Navigation
+                </button>
+
+                <span id="voiceStatus" class="voice-status">
+                    Find a route first to enable voice guidance.
+                </span>
+
+            </div>
+
+            <div class="summary" style="padding:0 0 15px;">
+
+                <div class="summary-item">
+                    <div class="summary-label">
+                        <i class="fa-solid fa-road"></i> Total Distance
+                    </div>
+                    <div id="directionDistance" class="summary-value">—</div>
+                </div>
+
+                <div class="summary-item">
+                    <div class="summary-label">
+                        <i class="fa-solid fa-clock"></i> Duration
+                    </div>
+                    <div id="directionDuration" class="summary-value">—</div>
+                </div>
+
+            </div>
+
+            <div id="turnInstructions" class="instruction-list">
+
+                <div class="empty">
+                    <i class="fa-solid fa-location-arrow"></i>
+                    <h3>No Route Instructions Yet</h3>
+                    <p>Enter From and To locations and click Find Best Route.</p>
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+</main>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="js/route-finder.js"></script>
+<script src="js/auth.js"></script>
+
+</body>
+</html>

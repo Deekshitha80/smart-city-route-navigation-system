@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Success - Smart City</title>
+    <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+<script>
+(async function () {
+    try {
+        const response = await fetch('/api/me', { credentials: 'same-origin' });
+        if (!response.ok) throw new Error('Authentication session was not created.');
+        const data = await response.json();
+        const user = data.user;
+
+        localStorage.setItem('smartCityLoggedIn', 'true');
+        localStorage.setItem('currentUser', user.email || user.id || user.provider + 'User');
+        localStorage.setItem('currentUserName', user.name || user.provider + ' User');
+        localStorage.setItem('smartCitySocialUser', JSON.stringify(user));
+
+        window.location.replace('dashboard.html');
+    } catch (error) {
+        window.location.replace('oauth-error.html?message=' + encodeURIComponent(error.message));
+    }
+})();
+</script>
+</body>
+</html>

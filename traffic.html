@@ -1,0 +1,1733 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Traffic Status | Smart City</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f5f7fb;
+            color: #172033;
+        }
+
+        /* ================= SIDEBAR ================= */
+
+        .sidebar {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 250px !important;
+            height: 100vh !important;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    #111936 0%,
+                    #16285a 100%
+                ) !important;
+
+            padding: 28px 18px !important;
+
+            color: white !important;
+            z-index: 9999 !important;
+            overflow-y: auto !important;
+        }
+
+        .sidebar .logo {
+            display: flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            padding: 5px 8px 28px !important;
+        }
+
+        .sidebar .logo-icon {
+            width: 48px !important;
+            height: 48px !important;
+            border-radius: 14px !important;
+
+            background: #1769ff !important;
+
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+
+            flex-shrink: 0 !important;
+
+            box-shadow:
+                0 5px 18px
+                rgba(23,105,255,0.35) !important;
+        }
+
+        .sidebar .logo-icon i {
+            color: white !important;
+            font-size: 20px !important;
+        }
+
+        .sidebar .logo h4 {
+            margin: 0 !important;
+            color: white !important;
+            font-size: 18px !important;
+            font-weight: 700 !important;
+        }
+
+        .sidebar .logo span {
+            display: block !important;
+            margin-top: 3px !important;
+            color: #9da8c7 !important;
+            font-size: 11px !important;
+        }
+
+        .sidebar .menu-title {
+            color: #8793b7 !important;
+            font-size: 11px !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1.5px !important;
+            margin: 12px 10px 10px !important;
+        }
+
+        .sidebar .nav-link {
+            display: flex !important;
+            align-items: center !important;
+            gap: 14px !important;
+
+            width: 100% !important;
+            height: 48px !important;
+
+            padding: 0 14px !important;
+            margin-bottom: 5px !important;
+
+            border-radius: 10px !important;
+
+            color: #c9d2ec !important;
+            text-decoration: none !important;
+
+            font-size: 14px !important;
+
+            transition: all .25s ease !important;
+        }
+
+        .sidebar .nav-link i {
+            width: 22px !important;
+            text-align: center !important;
+            font-size: 17px !important;
+            color: #d7e0f7 !important;
+        }
+
+        .sidebar .nav-link:hover {
+            background: rgba(47,105,255,.16) !important;
+            color: white !important;
+        }
+
+        .sidebar .nav-link.active {
+            background:
+                linear-gradient(
+                    90deg,
+                    #1769ff,
+                    #216cff
+                ) !important;
+
+            color: white !important;
+
+            box-shadow:
+                0 6px 18px
+                rgba(23,105,255,.28) !important;
+        }
+
+        .sidebar .nav-link.active i {
+            color: white !important;
+        }
+
+        /* ================= ADMIN ================= */
+
+        .sidebar .admin-box {
+            margin-top: 28px !important;
+            padding: 14px !important;
+
+            border-radius: 14px !important;
+
+            background: rgba(255,255,255,.07) !important;
+
+            border:
+                1px solid
+                rgba(255,255,255,.06) !important;
+        }
+
+        .sidebar .admin-info {
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            margin-bottom: 12px !important;
+        }
+
+        .sidebar .admin-avatar {
+            width: 38px !important;
+            height: 38px !important;
+
+            border-radius: 50% !important;
+
+            background: #8ec5ff !important;
+
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+
+            flex-shrink: 0 !important;
+        }
+
+        .sidebar .admin-avatar i {
+            color: white !important;
+            font-size: 16px !important;
+        }
+
+        .sidebar .admin-name {
+            color: white !important;
+            font-size: 14px !important;
+            font-weight: 600 !important;
+        }
+
+        .sidebar .admin-role {
+            color: #aab5d0 !important;
+            font-size: 11px !important;
+            margin-top: 2px !important;
+        }
+
+        .sidebar .logout {
+            width: 100% !important;
+
+            border: none !important;
+            border-radius: 9px !important;
+
+            padding: 10px !important;
+
+            background: rgba(255,255,255,.06) !important;
+
+            color: #dce3f5 !important;
+
+            font-size: 13px !important;
+
+            cursor: pointer !important;
+        }
+
+        .sidebar .logout i {
+            margin-right: 7px !important;
+        }
+
+        .sidebar .logout:hover {
+            background: rgba(255,255,255,.12) !important;
+            color: white !important;
+        }
+
+        /* ================= MAIN ================= */
+
+        .main-content {
+            margin-left: 250px !important;
+            min-height: 100vh !important;
+            box-sizing: border-box !important;
+        }
+
+        .traffic-page {
+            padding: 30px;
+        }
+
+        /* ================= HEADER ================= */
+
+        .traffic-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+
+        .traffic-title h1 {
+            margin: 0;
+            font-size: 30px;
+            font-weight: 750;
+            color: #172033;
+        }
+
+        .traffic-title p {
+            margin: 7px 0 0;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .traffic-live-badge {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+
+            padding: 10px 16px;
+
+            border-radius: 22px;
+
+            background: #ecfdf5;
+            border: 1px solid #bbf7d0;
+
+            color: #15803d;
+
+            font-size: 13px;
+            font-weight: 650;
+        }
+
+        .live-dot {
+            width: 9px;
+            height: 9px;
+
+            border-radius: 50%;
+
+            background: #22c55e;
+
+            box-shadow:
+                0 0 0 4px
+                rgba(34,197,94,.12);
+        }
+
+        /* ================= STAT CARDS ================= */
+
+        .traffic-stat-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 22px;
+        }
+
+        .traffic-stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+
+            border: 1px solid #e9edf5;
+
+            box-shadow:
+                0 5px 20px
+                rgba(15,23,42,.06);
+        }
+
+        .traffic-stat-icon {
+            width: 43px;
+            height: 43px;
+
+            border-radius: 12px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #eef4ff;
+            color: #3155ff;
+
+            margin-bottom: 13px;
+        }
+
+        .traffic-stat-card h3 {
+            margin: 0;
+
+            color: #7b8496;
+
+            font-size: 11px;
+            font-weight: 700;
+
+            letter-spacing: .5px;
+        }
+
+        .traffic-stat-value {
+            margin-top: 7px;
+
+            font-size: 21px;
+            font-weight: 750;
+
+            color: #172033;
+        }
+
+        .traffic-stat-sub {
+            margin-top: 4px;
+
+            color: #98a2b3;
+            font-size: 11px;
+        }
+
+        /* ================= MAIN CARD ================= */
+
+        .traffic-main-card {
+            background: white;
+
+            border-radius: 18px;
+
+            padding: 22px;
+
+            border: 1px solid #e9edf5;
+
+            box-shadow:
+                0 5px 22px
+                rgba(15,23,42,.06);
+        }
+
+        .traffic-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 18px;
+        }
+
+        .traffic-card-header h2 {
+            margin: 0;
+
+            font-size: 20px;
+
+            color: #172033;
+        }
+
+        .traffic-card-header h2 i {
+            color: #3155ff;
+            margin-right: 7px;
+        }
+
+        .traffic-card-header p {
+            margin: 5px 0 0;
+
+            font-size: 13px;
+
+            color: #7b8496;
+        }
+
+        /* ================= SEARCH ================= */
+
+        .traffic-search {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .traffic-search-box {
+            position: relative;
+            flex: 1;
+        }
+
+        .traffic-search-box i {
+            position: absolute;
+
+            left: 15px;
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            color: #8a94a6;
+        }
+
+        .traffic-search input {
+            width: 100%;
+            height: 48px;
+
+            padding:
+                0
+                15px
+                0
+                43px;
+
+            border:
+                1px solid
+                #dce2ec;
+
+            border-radius: 10px;
+
+            outline: none;
+
+            font-size: 14px;
+
+            color: #273247;
+
+            background: #fbfcfe;
+        }
+
+        .traffic-search input:focus {
+            border-color: #3155ff;
+
+            background: white;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(49,85,255,.08);
+        }
+
+        .search-btn {
+            height: 48px;
+
+            padding: 0 22px;
+
+            border: none;
+
+            border-radius: 10px;
+
+            background: #3155ff;
+
+            color: white;
+
+            font-weight: 650;
+
+            cursor: pointer;
+        }
+
+        .search-btn:hover {
+            background: #2447e8;
+        }
+
+        /* ================= MAP ================= */
+
+        #trafficMap {
+            width: 100%;
+            height: 500px;
+
+            border-radius: 14px;
+
+            overflow: hidden;
+
+            border:
+                1px solid
+                #dfe5ef;
+        }
+
+        .leaflet-container {
+            font-family:
+                "Segoe UI",
+                Arial,
+                sans-serif;
+        }
+
+        /* ================= REFRESH BUTTON ================= */
+
+        .refresh-btn {
+            border: none;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #3155ff,
+                    #6438e8
+                );
+
+            color: white;
+
+            padding: 11px 17px;
+
+            border-radius: 9px;
+
+            cursor: pointer;
+
+            font-size: 13px;
+
+            font-weight: 650;
+
+            transition: .2s ease;
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-1px);
+
+            box-shadow:
+                0 7px 16px
+                rgba(49,85,255,.25);
+        }
+
+
+        /* ================= TRAFFIC LEGEND ================= */
+
+        .traffic-legend-section {
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 18px 4px 4px;
+        }
+
+        .legend-title {
+            display: flex;
+
+            align-items: center;
+
+            gap: 9px;
+
+            color: #344054;
+
+            font-size: 13px;
+
+            font-weight: 700;
+        }
+
+        .legend-title i {
+            color: #3155ff;
+        }
+
+        .traffic-legend {
+            display: flex;
+
+            align-items: center;
+
+            gap: 28px;
+        }
+
+        .legend-item {
+            display: flex;
+
+            align-items: center;
+
+            gap: 9px;
+        }
+
+        .legend-line {
+            width: 34px;
+            height: 6px;
+
+            border-radius: 10px;
+
+            display: block;
+        }
+
+        .legend-line.low {
+            background: #22c55e;
+        }
+
+        .legend-line.moderate {
+            background: #f59e0b;
+        }
+
+        .legend-line.heavy {
+            background: #ef4444;
+        }
+
+        .legend-item strong {
+            display: block;
+
+            color: #344054;
+
+            font-size: 12px;
+        }
+
+        .legend-item small {
+            display: block;
+
+            color: #98a2b3;
+
+            font-size: 10px;
+
+            margin-top: 2px;
+        }
+
+
+        /* ================= LIVE TRAFFIC INFO ================= */
+
+        .traffic-info-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 15px;
+
+            margin-top: 20px;
+        }
+
+        .traffic-info-card {
+            padding: 18px;
+
+            border-radius: 14px;
+
+            background: #fbfcff;
+
+            border:
+                1px solid
+                #e8edf5;
+
+            transition: .2s ease;
+        }
+
+        .traffic-info-card:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 8px 20px
+                rgba(15,23,42,.06);
+        }
+
+        .info-card-top {
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+        }
+
+        .info-icon {
+            width: 38px;
+            height: 38px;
+
+            border-radius: 10px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+        }
+
+        .info-icon.green {
+            background: #ecfdf3;
+            color: #16a34a;
+        }
+
+        .info-icon.orange {
+            background: #fff7ed;
+            color: #ea580c;
+        }
+
+        .info-icon.blue {
+            background: #eff6ff;
+            color: #2563eb;
+        }
+
+        .info-icon.purple {
+            background: #f5f3ff;
+            color: #7c3aed;
+        }
+
+        .info-label {
+            color: #98a2b3;
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            letter-spacing: .8px;
+        }
+
+        .traffic-info-card h3 {
+            margin:
+                14px
+                0
+                5px;
+
+            color: #172033;
+
+            font-size: 17px;
+
+            font-weight: 700;
+        }
+
+        .traffic-info-card p {
+            margin: 0;
+
+            color: #7b8496;
+
+            font-size: 11px;
+
+            line-height: 1.5;
+        }
+
+
+        /* ================= TRAFFIC ALERT ================= */
+
+        .traffic-alert {
+            display: flex;
+
+            align-items: center;
+
+            gap: 14px;
+
+            margin-top: 18px;
+
+            padding: 16px;
+
+            border-radius: 13px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #f7f9ff,
+                    #fafbff
+                );
+
+            border:
+                1px solid
+                #e3e8f3;
+        }
+
+        .alert-icon {
+            width: 40px;
+            height: 40px;
+
+            border-radius: 10px;
+
+            background: #eef4ff;
+
+            color: #3155ff;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            flex-shrink: 0;
+        }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .alert-content h3 {
+            margin: 0 0 4px;
+
+            color: #273247;
+
+            font-size: 13px;
+        }
+
+        .alert-content p {
+            margin: 0;
+
+            color: #7b8496;
+
+            font-size: 11px;
+
+            line-height: 1.5;
+        }
+
+        .alert-status {
+            padding: 7px 11px;
+
+            border-radius: 20px;
+
+            background: #ecfdf5;
+
+            color: #15803d;
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            white-space: nowrap;
+        }
+
+
+        /* ================= LOCATION RESULT ================= */
+
+        .search-result-card {
+            display: flex;
+
+            align-items: center;
+
+            gap: 14px;
+
+            margin-top: 15px;
+
+            padding: 15px 17px;
+
+            border-radius: 12px;
+
+            background: white;
+
+            border:
+                1px solid
+                #e8edf5;
+        }
+
+        .result-icon {
+            width: 40px;
+            height: 40px;
+
+            border-radius: 10px;
+
+            background: #eef4ff;
+
+            color: #3155ff;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+        }
+
+        .result-content {
+            flex: 1;
+        }
+
+        .result-content span {
+            display: block;
+
+            color: #98a2b3;
+
+            font-size: 9px;
+
+            font-weight: 700;
+
+            letter-spacing: .8px;
+        }
+
+        .result-content strong {
+            display: block;
+
+            margin-top: 3px;
+
+            color: #273247;
+
+            font-size: 13px;
+        }
+
+        .coordinates {
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+        }
+
+        .coordinates span {
+            color: #98a2b3;
+
+            font-size: 9px;
+        }
+
+        .coordinates strong {
+            color: #475467;
+
+            font-size: 11px;
+
+            margin-right: 12px;
+        }
+
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 1100px) {
+
+            .traffic-stat-grid,
+            .traffic-info-grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 800px) {
+
+            .sidebar {
+                width: 220px !important;
+            }
+
+            .main-content {
+                margin-left: 220px !important;
+            }
+
+            .traffic-page {
+                padding: 20px;
+            }
+
+            .traffic-header {
+                align-items: flex-start;
+
+                flex-direction: column;
+
+                gap: 15px;
+            }
+
+            .traffic-stat-grid,
+            .traffic-info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .traffic-legend-section {
+                flex-direction: column;
+
+                align-items: flex-start;
+
+                gap: 14px;
+            }
+
+            .traffic-legend {
+                flex-wrap: wrap;
+            }
+
+            .search-result-card {
+                flex-wrap: wrap;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     SIDEBAR
+     ========================================================= -->
+
+<aside class="sidebar">
+
+    <div class="logo">
+
+        <div class="logo-icon">
+            <i class="fa-solid fa-route"></i>
+        </div>
+
+        <div>
+
+            <h4>SMART CITY</h4>
+
+            <span>
+                Route Navigation
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="menu-title">
+        Main Menu
+    </div>
+
+
+    <a
+        href="dashboard.html"
+        class="nav-link">
+
+        <i class="fa-solid fa-house"></i>
+
+        <span>Dashboard</span>
+
+    </a>
+
+
+    <a
+        href="map.html"
+        class="nav-link">
+
+        <i class="fa-solid fa-map"></i>
+
+        <span>Map View</span>
+
+    </a>
+
+
+    <a
+        href="route-finder.html"
+        class="nav-link">
+
+        <i class="fa-solid fa-route"></i>
+
+        <span>Route Finder</span>
+
+    </a>
+
+
+    <!-- ACTIVE -->
+
+    <a
+        href="traffic.html"
+        class="nav-link active">
+
+        <i class="fa-solid fa-traffic-light"></i>
+
+        <span>Traffic Status</span>
+
+    </a>
+
+
+    <a
+        href="algorithm.html"
+        class="nav-link">
+
+        <i class="fa-solid fa-brain"></i>
+
+        <span>Route Algorithms</span>
+
+    </a>
+
+
+    <a
+        href="history.html"
+        class="nav-link">
+
+        <i class="fa-solid fa-clock-rotate-left"></i>
+
+        <span>Route History</span>
+
+    </a>
+
+
+    <a
+        href="reports.html"
+        class="nav-link">
+
+        <i class="fa-solid fa-chart-column"></i>
+
+        <span>Reports</span>
+
+    </a>
+
+
+    <div class="menu-title">
+        System
+    </div>
+
+
+    <a
+        href="settings.html"
+        class="nav-link">
+
+        <i class="fa-solid fa-gear"></i>
+
+        <span>Settings</span>
+
+    </a>
+
+
+    <!-- ADMIN -->
+
+    <div class="admin-box">
+
+        <div class="admin-info">
+
+            <div class="admin-avatar">
+
+                <i class="fa-solid fa-user"></i>
+
+            </div>
+
+            <div>
+
+                <div class="admin-name">
+                    Admin
+                </div>
+
+                <div class="admin-role">
+                    Administrator
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <button
+            class="logout"
+            onclick="logoutUser()">
+
+            <i class="fa-solid fa-right-from-bracket"></i>
+
+            Logout
+
+        </button>
+
+    </div>
+
+</aside>
+
+
+<!-- =========================================================
+     MAIN CONTENT
+     ========================================================= -->
+
+<main class="main-content traffic-page">
+
+
+    <!-- HEADER -->
+
+    <div class="traffic-header">
+
+        <div class="traffic-title">
+
+            <h1>
+                Traffic Status
+            </h1>
+
+            <p>
+                Real-time road traffic monitoring
+                and congestion information.
+            </p>
+
+        </div>
+
+
+        <div class="traffic-live-badge">
+
+            <span class="live-dot"></span>
+
+            Live Traffic
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         REAL-TIME STAT CARDS
+         ===================================================== -->
+
+    <div class="traffic-stat-grid">
+
+
+        <div class="traffic-stat-card">
+
+            <div class="traffic-stat-icon">
+
+                <i class="fa-solid fa-gauge-high"></i>
+
+            </div>
+
+            <h3>
+                CURRENT TRAFFIC
+            </h3>
+
+            <div
+                class="traffic-stat-value"
+                id="currentTrafficStatus">
+
+                Search Location
+
+            </div>
+
+            <div
+                class="traffic-stat-sub"
+                id="trafficStatusMessage">
+
+                Waiting for live traffic data
+
+            </div>
+
+        </div>
+
+
+        <div class="traffic-stat-card">
+
+            <div class="traffic-stat-icon">
+
+                <i class="fa-solid fa-car"></i>
+
+            </div>
+
+            <h3>
+                CURRENT SPEED
+            </h3>
+
+            <div
+                class="traffic-stat-value"
+                id="currentSpeed">
+
+                —
+
+            </div>
+
+            <div class="traffic-stat-sub">
+
+                Live road speed
+
+            </div>
+
+        </div>
+
+
+        <div class="traffic-stat-card">
+
+            <div class="traffic-stat-icon">
+
+                <i class="fa-solid fa-road"></i>
+
+            </div>
+
+            <h3>
+                FREE FLOW SPEED
+            </h3>
+
+            <div
+                class="traffic-stat-value"
+                id="freeFlowSpeed">
+
+                —
+
+            </div>
+
+            <div class="traffic-stat-sub">
+
+                Normal road speed
+
+            </div>
+
+        </div>
+
+
+        <div class="traffic-stat-card">
+
+            <div class="traffic-stat-icon">
+
+                <i class="fa-solid fa-clock"></i>
+
+            </div>
+
+            <h3>
+                LAST UPDATED
+            </h3>
+
+            <div
+                class="traffic-stat-value"
+                id="lastUpdated">
+
+                —
+
+            </div>
+
+            <div class="traffic-stat-sub">
+
+                Live traffic refresh
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         MAIN TRAFFIC MAP
+         ===================================================== -->
+
+    <div class="traffic-main-card">
+
+
+        <div class="traffic-card-header">
+
+            <div>
+
+                <h2>
+
+                    <i class="fa-solid fa-map-location-dot"></i>
+
+                    Real-Time Traffic Map
+
+                </h2>
+
+                <p>
+                    Search a location to view
+                    current traffic conditions.
+                </p>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="refresh-btn"
+                id="refreshTrafficBtn">
+
+                <i class="fa-solid fa-rotate"></i>
+
+                Refresh Traffic
+
+            </button>
+
+        </div>
+
+
+        <!-- SEARCH -->
+
+        <div class="traffic-search">
+
+            <div class="traffic-search-box">
+
+                <i
+                    class="fa-solid fa-magnifying-glass">
+                </i>
+
+                <input
+                    type="text"
+                    id="trafficSearch"
+                    placeholder="Search city, road or location..."
+                    autocomplete="off"
+                >
+
+            </div>
+
+
+            <button
+                type="button"
+                class="search-btn"
+                id="trafficSearchBtn">
+
+                <i class="fa-solid fa-search"></i>
+
+                Search
+
+            </button>
+
+        </div>
+
+
+        <!-- MAP -->
+
+        <div style="position:relative;">
+
+            <div id="trafficMap"></div>
+
+            <div
+                class="map-loading"
+                id="mapLoading">
+
+                <i
+                    class="fa-solid fa-spinner fa-spin">
+                </i>
+
+                Loading live traffic...
+
+            </div>
+
+        </div>
+
+        <!-- =====================================================
+             TRAFFIC LEGEND
+             ===================================================== -->
+
+        <div class="traffic-legend-section">
+
+            <div class="legend-title">
+
+                <i class="fa-solid fa-layer-group"></i>
+
+                Live Traffic Level
+
+            </div>
+
+
+            <div class="traffic-legend">
+
+                <div class="legend-item">
+
+                    <span class="legend-line low"></span>
+
+                    <div>
+
+                        <strong>Low</strong>
+
+                        <small>Free flow</small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="legend-item">
+
+                    <span class="legend-line moderate"></span>
+
+                    <div>
+
+                        <strong>Moderate</strong>
+
+                        <small>Slower traffic</small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="legend-item">
+
+                    <span class="legend-line heavy"></span>
+
+                    <div>
+
+                        <strong>Heavy</strong>
+
+                        <small>High congestion</small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             TRAFFIC INFORMATION CARDS
+             ===================================================== -->
+
+        <div class="traffic-info-grid">
+
+
+            <!-- CURRENT STATUS -->
+
+            <div class="traffic-info-card">
+
+                <div class="info-card-top">
+
+                    <div class="info-icon green">
+
+                        <i class="fa-solid fa-gauge-high"></i>
+
+                    </div>
+
+                    <span class="info-label">
+                        CURRENT STATUS
+                    </span>
+
+                </div>
+
+
+                <h3 id="roadCondition">
+                    Waiting for data
+                </h3>
+
+
+                <p id="roadConditionMessage">
+                    Search a location to receive
+                    real-time traffic information.
+                </p>
+
+            </div>
+
+
+            <!-- CONGESTION -->
+
+            <div class="traffic-info-card">
+
+                <div class="info-card-top">
+
+                    <div class="info-icon orange">
+
+                        <i class="fa-solid fa-chart-line"></i>
+
+                    </div>
+
+                    <span class="info-label">
+                        CONGESTION
+                    </span>
+
+                </div>
+
+
+                <h3 id="congestionLevel">
+                    —
+                </h3>
+
+
+                <p>
+                    Calculated using current
+                    and free-flow road speeds.
+                </p>
+
+            </div>
+
+
+            <!-- ROAD SPEED -->
+
+            <div class="traffic-info-card">
+
+                <div class="info-card-top">
+
+                    <div class="info-icon blue">
+
+                        <i class="fa-solid fa-car-side"></i>
+
+                    </div>
+
+                    <span class="info-label">
+                        ROAD SPEED
+                    </span>
+
+                </div>
+
+
+                <h3 id="roadSpeed">
+                    —
+                </h3>
+
+
+                <p>
+                    Current traffic speed
+                    reported by the provider.
+                </p>
+
+            </div>
+
+
+            <!-- DATA SOURCE -->
+
+            <div class="traffic-info-card">
+
+                <div class="info-card-top">
+
+                    <div class="info-icon purple">
+
+                        <i class="fa-solid fa-satellite-dish"></i>
+
+                    </div>
+
+                    <span class="info-label">
+                        DATA SOURCE
+                    </span>
+
+                </div>
+
+
+                <h3>
+                    TomTom Traffic
+                </h3>
+
+
+                <p>
+                    Real-time traffic flow
+                    data provider.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             LIVE TRAFFIC ALERT
+             ===================================================== -->
+
+        <div class="traffic-alert">
+
+            <div class="alert-icon">
+
+                <i class="fa-solid fa-circle-info"></i>
+
+            </div>
+
+
+            <div class="alert-content">
+
+                <h3>
+                    Real-Time Traffic Monitoring
+                </h3>
+
+                <p id="trafficAlertMessage">
+                    Search a location to load
+                    current traffic flow data.
+                    Traffic information is obtained
+                    from the configured traffic provider.
+                </p>
+
+            </div>
+
+
+            <span
+                class="alert-status"
+                id="trafficApiStatus">
+
+                LIVE
+
+            </span>
+
+        </div>
+
+
+        <!-- =====================================================
+             SEARCHED LOCATION
+             ===================================================== -->
+
+        <div
+            class="search-result-card"
+            id="trafficSearchResult">
+
+
+            <div class="result-icon">
+
+                <i class="fa-solid fa-location-dot"></i>
+
+            </div>
+
+
+            <div class="result-content">
+
+                <span>
+                    SEARCHED LOCATION
+                </span>
+
+                <strong id="searchedPlace">
+                    No location selected
+                </strong>
+
+            </div>
+
+
+            <div class="coordinates">
+
+                <span>
+                    LAT
+                </span>
+
+                <strong id="searchedLat">
+                    —
+                </strong>
+
+
+                <span>
+                    LON
+                </span>
+
+                <strong id="searchedLon">
+                    —
+                </strong>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</main>
+
+
+<!-- =========================================================
+     LEAFLET JS
+     ========================================================= -->
+
+<script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
+
+
+<!-- =========================================================
+     TRAFFIC JAVASCRIPT
+     ========================================================= -->
+
+<script src="js/traffic.js"></script>
+
+
+<!-- =========================================================
+     AUTH JAVASCRIPT
+     ========================================================= -->
+
+<script src="js/auth.js"></script>
+
+
+</body>
+
+</html>

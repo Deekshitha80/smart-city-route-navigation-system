@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Error - Smart City</title>
+    <link rel="stylesheet" href="css/login.css">
+    <style>
+        .oauth-error-box { max-width: 620px; margin: 12vh auto; padding: 32px; text-align: center; background: #fff; border-radius: 14px; box-shadow: 0 10px 35px rgba(0,0,0,.08); }
+        .oauth-error-box h1 { color: #172b4d; }
+        .oauth-error-box p { color: #667085; line-height: 1.6; }
+        .oauth-error-box a { display: inline-block; margin-top: 14px; padding: 11px 20px; border-radius: 8px; background: linear-gradient(90deg,#3155ff,#6638e8); color: #fff; text-decoration: none; }
+    </style>
+</head>
+<body>
+<div class="oauth-error-box">
+    <h1>Login could not be completed</h1>
+    <p id="message">Please try again.</p>
+    <a href="login.html">Back to Login</a>
+</div>
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const msg = params.get('message');
+    if (msg) document.getElementById('message').textContent = msg;
+</script>
+</body>
+</html>
